@@ -211,7 +211,9 @@ jobs:
         TEAM_SETUP_TOKEN: ${{ secrets.TEAM_SETUP_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
-        echo "🧪 Creating Test Issues (Sequential Job 2/3, Order Preserved)..."
+        echo "🧪 Creating Test Issues (Sequential Job 2/3, GitHub API Compliant)..."
+        echo "🎯 Processing all 234 issues with 80 req/min rate limit compliance"
+        echo "⏱️ Target: Complete within 10 minutes"
         python scripts/create_test_issues.py
         echo "✅ Test issues creation completed!"
         

@@ -15,11 +15,11 @@ from typing import Dict, List, Optional
 TEAM_SETUP_TOKEN = os.environ.get('TEAM_SETUP_TOKEN')
 GITHUB_REPOSITORY = os.environ.get('GITHUB_REPOSITORY')
 
-# Rate Limit設定（5分目標に最適化）
-REQUEST_DELAY = 1.0      # 1.0秒間隔（60req/min）
-BATCH_SIZE = 15          # バランス重視
-BATCH_PAUSE = 5.0        # 休憩時間短縮
-MAX_RETRIES = 5          # リトライ回数削減
+# Rate Limit設定（GitHub公式80req/min制限準拠）
+REQUEST_DELAY = 0.9      # 0.9秒間隔（67req/min、安全マージンあり）
+BATCH_SIZE = 15          # 15件ずつ処理
+BATCH_PAUSE = 20.0       # 20秒休憩（Rate制限リセット待ち）
+MAX_RETRIES = 3          # 短いリトライ
 
 if not TEAM_SETUP_TOKEN or not GITHUB_REPOSITORY:
     raise ValueError("TEAM_SETUP_TOKEN and GITHUB_REPOSITORY environment variables are required")
@@ -33,7 +33,7 @@ HEADERS = {
 }
 
 def load_test_data() -> List[Dict]:
-    """テストCSVデータを読み込み"""
+    """テストCSVデータを読み込み（全件）"""
     print("📊 Loading test data...")
     
     test_issues = []
@@ -44,7 +44,7 @@ def load_test_data() -> List[Dict]:
             reader = csv.DictReader(f)
             test_issues = [row for row in reader if row.get('title', '').strip()]
     
-    print(f"📋 Loaded: {len(test_issues)} test issues")
+    print(f"📋 Loaded: {len(test_issues)} test issues (all issues)")
     return test_issues
 
 def create_single_issue(issue_data: Dict, index: int, total: int) -> Optional[Dict]:
@@ -69,13 +69,24 @@ def create_single_issue(issue_data: Dict, index: int, total: int) -> Optional[Di
                 return issue
             
             elif response.status_code == 403:
+                remaining = int(response.headers.get('x-ratelimit-remaining', 0))
                 retry_after = response.headers.get('retry-after')
-                if retry_after:
-                    wait_time = int(retry_after) + 10  # 余裕を持たせる
+                
+                if remaining > 3000:
+                    # Secondary Rate Limit（80req/min制限）の可能性
+                    if attempt == 1:
+                        wait_time = 90   # 初回は1.5分待機
+                    else:
+                        wait_time = 180  # 2回目以降は3分待機
+                    print(f"  ⏳ Content creation rate limit (80/min) hit (remaining: {remaining}), waiting {wait_time}s...")
                 else:
-                    wait_time = 60  # デフォルト60秒待機
-                remaining = response.headers.get('x-ratelimit-remaining', 'unknown')
-                print(f"  ⏳ Rate limit hit (remaining: {remaining}), waiting {wait_time}s...")
+                    # Primary Rate Limit
+                    if retry_after:
+                        wait_time = int(retry_after) + 30
+                    else:
+                        wait_time = 300  # 5分待機
+                    print(f"  ⏳ Primary rate limit hit (remaining: {remaining}), waiting {wait_time}s...")
+                
                 time.sleep(wait_time)
                 continue
                 
@@ -132,6 +143,21 @@ def prepare_test_data(tests: List[Dict]) -> List[Dict]:
         test_requests.append(issue_data)
     
     return test_requests
+
+def smart_batch_pause(batch_num: int, batch_size: int, start_time: float):
+    """バッチ処理開始からの経過時間を考慮した休憩"""
+    elapsed = time.time() - start_time
+    requests_sent = batch_num * batch_size
+    
+    # 1分間の送信レートをチェック（80req/min制限対策）
+    if requests_sent > 60 and elapsed < 60:
+        # 1分以内に60件超過の場合、追加待機
+        extra_wait = 65 - elapsed
+        print(f"  ⏳ Rate limit safety wait: {extra_wait:.1f}s (sent {requests_sent} requests in {elapsed:.1f}s)")
+        time.sleep(extra_wait)
+    
+    print(f"  ⏳ Batch pause ({BATCH_PAUSE}s) - allowing rate limits to recover...")
+    time.sleep(BATCH_PAUSE)
 
 def create_test_issues_batch(issues_data: List[Dict], batch_num: int, total_batches: int, start_time: float, total_created: int, total_issues: int) -> List[Dict]:
     """テストIssuesをバッチ作成（順序保持）"""
@@ -194,10 +220,16 @@ def main():
         total_batches = math.ceil(len(test_requests) / BATCH_SIZE)
         
         print(f"📋 Processing {len(test_requests)} test issues in {total_batches} batches")
+        print(f"⚙️ GitHub API compliant: {REQUEST_DELAY}s delay ({60/REQUEST_DELAY:.0f} req/min), {BATCH_SIZE} batch size, {BATCH_PAUSE}s pause")
+        print(f"💡 Target: Complete all {len(test_requests)} issues within 10 minutes")
         
-        # 完了予想時刻
-        estimated_time = (len(test_requests) * REQUEST_DELAY + (total_batches - 1) * BATCH_PAUSE) / 60
-        print(f"⏱️ Estimated completion: {estimated_time:.1f} minutes")
+        # 完了予想時刻（GitHub公式制限準拠）
+        base_time = len(test_requests) * REQUEST_DELAY
+        pause_time = (total_batches - 1) * BATCH_PAUSE
+        buffer_time = 60   # Rate limit対応の予備時間（短縮）
+        estimated_time = (base_time + pause_time + buffer_time) / 60
+        print(f"⏱️ Estimated completion: {estimated_time:.1f} minutes (GitHub 80 req/min compliant)")
+        print(f"🎯 Target: Under 10 minutes for {len(test_requests)} issues")
         
         # バッチ処理
         all_created = []
@@ -217,10 +249,9 @@ def main():
             )
             all_created.extend(batch_created)
             
-            # バッチ間休憩
+            # バッチ間休憩（Rate limit回復のため）
             if batch_num < total_batches - 1:
-                print(f"  ⏳ Batch pause ({BATCH_PAUSE}s)...")
-                time.sleep(BATCH_PAUSE)
+                smart_batch_pause(batch_num + 1, BATCH_SIZE, start_time)
         
         # 結果保存
         with open('test_issues_result.txt', 'w', encoding='utf-8') as f:

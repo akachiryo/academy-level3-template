@@ -212,15 +212,15 @@ def main():
             if project_id:
                 created_projects[project_title] = project_id
             
-                # "タスク" プロジェクトにのみ難易度フィールドを追加
+                # "タスク" プロジェクトにのみポイントフィールドを追加
                 if "タスク" in project_title:
                     print(f"\n📝 Adding custom field to: {project_title}")
-                    difficulty_options = ["Required", "Optional", "Challenge"]
-                    field_id = create_custom_field(project_id, "Difficulty", difficulty_options)
+                    point_options = ["1", "2", "3", "5", "8", "13"]
+                    field_id = create_custom_field(project_id, "Point", point_options)
                     
                     if field_id:
                         # フィールドIDも保存（後で使用）
-                        with open('difficulty_field.txt', 'w', encoding='utf-8') as f:
+                        with open('point_field.txt', 'w', encoding='utf-8') as f:
                             f.write(f"{project_title}:{project_id}:{field_id}")
         
         # Rate limit対策

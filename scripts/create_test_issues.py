@@ -15,10 +15,10 @@ from typing import Dict, List, Optional
 TEAM_SETUP_TOKEN = os.environ.get('TEAM_SETUP_TOKEN')
 GITHUB_REPOSITORY = os.environ.get('GITHUB_REPOSITORY')
 
-# Rate Limit設定（保守的）
-REQUEST_DELAY = 1.5      # 1.5秒間隔（Rate制限回避）
-BATCH_SIZE = 10          # 小さめのバッチ
-BATCH_PAUSE = 15.0       # 長めの休憩
+# Rate Limit設定（5分目標に最適化）
+REQUEST_DELAY = 1.0      # 1.0秒間隔（60req/min）
+BATCH_SIZE = 15          # バランス重視
+BATCH_PAUSE = 5.0        # 休憩時間短縮
 MAX_RETRIES = 5          # リトライ回数削減
 
 if not TEAM_SETUP_TOKEN or not GITHUB_REPOSITORY:
@@ -147,7 +147,7 @@ def create_test_issues_batch(issues_data: List[Dict], batch_num: int, total_batc
         
         # 進捗表示（タイムアウト防止）
         current_total = total_created + len(created_issues)
-        if (i + 1) % 5 == 0 or i == len(issues_data) - 1:
+        if (i + 1) % 10 == 0 or i == len(issues_data) - 1:  # 10件ごとに変更
             elapsed = time.time() - start_time
             rate = current_total / elapsed if elapsed > 0 else 0
             remaining_issues = total_issues - current_total

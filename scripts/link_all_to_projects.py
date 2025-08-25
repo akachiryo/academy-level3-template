@@ -79,8 +79,10 @@ def get_all_issues_by_labels() -> Dict[str, List[Dict]]:
                     if not issues:
                         break
                     
-                    issues_by_type[label_type].extend(issues)
-                    print(f"  📄 {label_type}: fetched page {page} ({len(issues)} issues)")
+                    # Issueを番号順でソートして追加（プロジェクト表示順序修正）
+                    sorted_issues = sorted(issues, key=lambda x: x.get('number', 0))
+                    issues_by_type[label_type].extend(sorted_issues)
+                    print(f"  📄 {label_type}: fetched page {page} ({len(issues)} issues, sorted by number)")
                     page += 1
                     time.sleep(0.5)  # API制限回避
                 else:
@@ -154,18 +156,20 @@ def link_issues_to_projects(issues_by_type: Dict[str, List[Dict]], project_ids: 
             linking_results[issue_type] = 0
             continue
         
-        print(f"  📌 Linking {len(issues)} {issue_type} issues to {project_name}")
+        # Issueを番号順（昇順）でソートして紐づけ（表示順序修正）
+        sorted_issues = sorted(issues, key=lambda x: x.get('number', 0))
+        print(f"  📌 Linking {len(sorted_issues)} {issue_type} issues to {project_name} (in number order)")
         success_count = 0
         
-        for i, issue in enumerate(issues):
+        for i, issue in enumerate(sorted_issues):
             try:
                 item_id = add_issue_to_project(project_id, issue)
                 if item_id:
                     success_count += 1
                 
                 # 進捗表示
-                if (i + 1) % 50 == 0 or i == len(issues) - 1:
-                    print(f"    ✅ Progress: {i + 1}/{len(issues)} ({success_count} successful)")
+                if (i + 1) % 50 == 0 or i == len(sorted_issues) - 1:
+                    print(f"    ✅ Progress: {i + 1}/{len(sorted_issues)} ({success_count} successful)")
                     
             except Exception as e:
                 print(f"    ❌ Link exception: {str(e)}")
@@ -173,7 +177,7 @@ def link_issues_to_projects(issues_by_type: Dict[str, List[Dict]], project_ids: 
             time.sleep(0.1)  # API制限回避
         
         linking_results[issue_type] = success_count
-        print(f"  📊 {project_name}: {success_count}/{len(issues)} issues linked")
+        print(f"  📊 {project_name}: {success_count}/{len(sorted_issues)} issues linked")
     
     return linking_results
 

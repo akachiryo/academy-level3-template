@@ -216,11 +216,12 @@ def create_discussion(repository_id: str, category_id: str, title: str, body: st
 def main():
     """メイン処理"""
     print("=" * 60)
-    print("💬 DISCUSSIONS SETUP v3.0 (CONSOLIDATED)")
+    print("💬 DISCUSSIONS SETUP v4.0 (MEETING TEMPLATE ONLY)")
     print("=" * 60)
     print(f"📦 Repository: {GITHUB_REPOSITORY}")
     print(f"⏰ Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"🔧 Script: setup_discussions.py v3.0")
+    print(f"🔧 Script: setup_discussions.py v4.0")
+    print(f"📝 Note: Wiki content migration handled by create_wiki_discussions.py")
     print("=" * 60)
     
     # リポジトリ情報取得
@@ -250,12 +251,22 @@ def main():
     # 既存のカテゴリーを確認してそこに議事録テンプレートを作成
     
     if existing_categories and not template_exists:
-        # 最初のカテゴリーを使用してテンプレートを作成
-        first_category = existing_categories[0]
-        category_id = first_category['id']
-        category_name = first_category['name']
+        # Generalカテゴリーを優先して探す
+        general_category = None
+        for category in existing_categories:
+            if category['name'].lower() == 'general' or category['slug'] == 'general':
+                general_category = category
+                break
         
-        print(f"  📝 Using existing category: {category_name}")
+        # Generalがなければ最初のカテゴリーを使用
+        if general_category:
+            category_id = general_category['id']
+            category_name = general_category['name']
+        else:
+            category_id = existing_categories[0]['id']
+            category_name = existing_categories[0]['name']
+        
+        print(f"  📝 Using category: {category_name}")
         print(f"  📋 Creating meeting minutes template...")
         
         # 議事録テンプレートを作成
@@ -308,6 +319,8 @@ YYYY/MM/DD HH:MM ～ HH:MM
 - GitHub リポジトリの Discussions タブ → Categories → New category
 - 名前: 議事録
 - 説明: チーム開発の議事録を管理するカテゴリーです
+
+**プロジェクト情報**: Wikiコンテンツは create_wiki_discussions.py で Discussions として作成されます。
 """
         
         create_discussion(repository_id, category_id, template_title, template_body)

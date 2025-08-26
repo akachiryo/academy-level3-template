@@ -20,21 +20,15 @@
    - Name: `TEAM_SETUP_TOKEN`
    - Secret: 作成したトークンを貼り付け
 
-### 3. 自動セットアップ準備
-wikiを変更可能状態にする
-
-1. [wiki](../../wiki) に遷移
-2. `Create the first page` ボタンをクリック
-3. 何も編集せず右下の`Save page`ボタンをクリック
-4. Home画面が表示される
-
 ### 2. 自動セットアップの実行
-[![🚀 Team Setup](https://img.shields.io/badge/🚀_Team_Setup_v3.0-Click_to_Start-success?style=for-the-badge&logo=github)](../../actions/workflows/team-setup.yml)
+[![🚀 Team Setup](https://img.shields.io/badge/🚀_Team_Setup_v5.0-Click_to_Start-success?style=for-the-badge&logo=github)](../../actions/workflows/team-setup.yml)
 
 1. 上記の「🚀 Team Setup」ボタンをクリック
 2. `Run workflow` ボタンをクリックして実行
 3. [Actions](../../actions) タブで進行状況を確認
 4. 全セットアップが完了するまで待つ
+
+**v5.0の新機能**: プロジェクト情報（テーブル設計書、開発ルールなど）がDiscussionsとして作成されます。
 
 ### 3. 手動セットアップ
 1. イマココSNS（KPT）のstatusをKPT用に変更する
@@ -64,11 +58,11 @@ mvn spring-boot:run
 
 ## 🔧 トラブルシューティング
 
-### 古いエラーが出る場合（v3.0移行後）
+### 古いエラーが出る場合（v5.0移行後）
 もし以下のエラーメッセージが表示される場合:
 - `⚠️ Limiting to first 50 test issues to avoid rate limits`
 - `⚠️ Limiting to first 30 issues for project addition`
-- Wikiの Python indentation エラー
+- Wiki関連のエラー
 
 **これは古いコードが実行されている証拠です。**
 
@@ -81,8 +75,18 @@ python scripts/cleanup_force_refresh.py
 python scripts/verify_environment.py
 
 # 3. ワークフローを手動実行
-# GitHub Actions タブで「🚀 Team Development Setup v3.0 (CONSOLIDATED)」を実行
+# GitHub Actions タブで「🚀 Team Development Setup v5.0 (DISCUSSIONS MIGRATION)」を実行
 ```
+
+## 📋 プロジェクト情報
+
+v5.0より、プロジェクト情報はDiscussionsで管理されます：
+- **テーブル設計書**: データベース設計の詳細
+- **チーム開発ルール**: 開発・レビュールールとガイドライン
+- **キックオフ情報**: プロジェクト開始情報
+- **プロジェクト概要**: 全体概要と参考資料
+
+[Discussions](../../discussions) タブでアクセスできます。
 
 ## 📝 参考資料
 

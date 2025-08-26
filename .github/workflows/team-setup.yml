@@ -1,4 +1,4 @@
-name: 🚀 Team Development Setup v4.0 (PARALLEL OPTIMIZED)
+name: 🚀 Team Development Setup v5.0 (DISCUSSIONS MIGRATION)
 
 on:
   workflow_dispatch:
@@ -18,10 +18,10 @@ jobs:
     - name: 🔍 Environment Diagnostics
       run: |
         echo "=========================================================="
-        echo "🚀 TEAM SETUP WORKFLOW v3.0 (CONSOLIDATED) STARTING"
+        echo "🚀 TEAM SETUP WORKFLOW v5.0 (DISCUSSIONS MIGRATION) STARTING"
         echo "=========================================================="
         echo "⏰ Timestamp: $(date)"
-        echo "🔧 Workflow: team-setup.yml v3.0"
+        echo "🔧 Workflow: team-setup.yml v5.0 (Wiki → Discussions)"
         echo "📂 Working Directory: $(pwd)"
         echo "👤 Actor: ${{ github.actor }}"
         echo "📦 Repository: ${{ github.repository }}"
@@ -85,60 +85,21 @@ jobs:
         TEAM_SETUP_TOKEN: ${{ secrets.TEAM_SETUP_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
-        echo "💬 Step 2: Setting up Discussions (v3.0)..."
+        echo "💬 Step 2: Setting up Discussions (v4.0)..."
         python scripts/setup_discussions.py
-        echo "✅ Discussions setup complete"
+        echo "✅ Meeting minutes template created"
         
     # ===============================
-    # Step 3: Setup Wiki
+    # Step 3: Create Wiki Discussions
     # ===============================
-    - name: 📚 Setup GitHub Wiki
+    - name: 📚 Create Wiki Content as Discussions
       env:
         TEAM_SETUP_TOKEN: ${{ secrets.TEAM_SETUP_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
-        echo "📚 Step 3: Setting up Wiki..."
-        
-        # Generate wiki content
-        python scripts/setup_wiki.py
-        
-        # Initialize wiki repository if needed
-        if [ -d "wiki" ]; then
-          echo "📝 Initializing Wiki repository..."
-          
-          # Create temporary directory for wiki operations
-          WIKI_DIR="wiki_repository"
-          rm -rf $WIKI_DIR
-          mkdir -p $WIKI_DIR
-          cd $WIKI_DIR
-          
-          # Initialize git
-          git init
-          git config user.email "action@github.com"
-          git config user.name "GitHub Action"
-          
-          # Copy all wiki content
-          cp -r ../wiki/* . 2>/dev/null || echo "No wiki files to copy"
-          
-          # Create initial commit
-          git add .
-          git commit -m "📚 Initialize Wiki with content" || echo "No changes to commit"
-          
-          # Push to wiki repository
-          git remote add origin https://${{ secrets.TEAM_SETUP_TOKEN }}@github.com/${{ github.repository }}.wiki.git
-          
-          # Try to push (create if doesn't exist)
-          git push --force --set-upstream origin master 2>/dev/null || \
-          git push --force --set-upstream origin main 2>/dev/null || \
-          echo "Wiki repository might already exist or need manual initialization"
-          
-          cd ..
-          rm -rf $WIKI_DIR
-        else
-          echo "⚠️ Wiki content directory not found"
-        fi
-        
-        echo "✅ Wiki setup complete"
+        echo "📚 Step 3: Creating Wiki content as Discussions..."
+        python scripts/create_wiki_discussions.py
+        echo "✅ Wiki content migration to Discussions complete"
         
     # ===============================
     # Step 4: Create Issues (Parallel Processing)
@@ -327,14 +288,14 @@ jobs:
         echo "🎉           (PARALLEL OPTIMIZED)             🎉"
         echo "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉"
         echo ""
-        echo "🆕 VERSION: v4.0 (PARALLEL PROCESSING OPTIMIZED)"
+        echo "🆕 VERSION: v5.0 (WIKI TO DISCUSSIONS MIGRATION)"
         echo "✅ Successfully Created:"
         echo "• 📊 3 GitHub Projects V2"
         echo "• 📋 Task Issues (parallel job)"
         echo "• 🧪 Test Issues (sequential, order preserved)"
         echo "• 🎯 KPT Issues (parallel job)"
         echo "• 🔗 All issues linked to projects"
-        echo "• 📚 Wiki pages with table design"
+        echo "• 📚 Wiki content as Discussions (private repo compatible)"
         echo "• 💬 Discussion template"
         echo ""
         
@@ -356,11 +317,14 @@ jobs:
         echo "🔗 Access your resources:"
         echo "• Projects: https://github.com/${{ github.repository }}/projects"
         echo "• Issues: https://github.com/${{ github.repository }}/issues"
-        echo "• Wiki: https://github.com/${{ github.repository }}/wiki"
         echo "• Discussions: https://github.com/${{ github.repository }}/discussions"
         echo ""
-        echo "🚀 Performance Improvements:"
-        echo "• Parallel processing: Task, Test, KPT issues created simultaneously"
-        echo "• Optimized API settings: 0.8s delay, 15 batch size, 8s batch pause"
-        echo "• Target execution time: ~5 minutes (down from ~15 minutes)"
-        echo "• Test order preservation: Maintained sequential execution for tests"
+        echo "📋 New in v5.0:"
+        echo "• Wiki content migrated to Discussions (private repo compatible)"
+        echo "• Table design, rules, and project info available as discussions"
+        echo ""
+        echo "🚀 v5.0 Improvements:"
+        echo "• Wiki content → Discussions migration (private repo compatible)"
+        echo "• Table design automatically generated from CSV data"
+        echo "• All documentation accessible in Discussions tab"
+        echo "• Enhanced Sprint management with 3-month planning window"

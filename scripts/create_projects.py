@@ -220,11 +220,6 @@ def setup_project_fields(project_id: str, project_title: str) -> Dict[str, str]:
         else:
             print(f"  ℹ️ Field already exists: Sprint")
         
-        # 従来のPointフィールドも維持（後方互換性）
-        if "Point" not in existing_fields:
-            field_id = create_custom_field(project_id, "Point", point_options)
-            if field_id:
-                created_fields["Point"] = field_id
     
     elif "テスト" in project_title:
         # テストプロジェクト: Sprintのみ

@@ -251,20 +251,29 @@ def main():
     # 既存のカテゴリーを確認してそこに議事録テンプレートを作成
     
     if existing_categories and not template_exists:
-        # Generalカテゴリーを優先して探す
+        # Announcementsカテゴリーを優先して探す（議事録テンプレート用）
+        announcements_category = None
         general_category = None
-        for category in existing_categories:
-            if category['name'].lower() == 'general' or category['slug'] == 'general':
-                general_category = category
-                break
         
-        # Generalがなければ最初のカテゴリーを使用
-        if general_category:
+        for category in existing_categories:
+            if category['name'].lower() == 'announcements' or category['slug'] == 'announcements':
+                announcements_category = category
+            elif category['name'].lower() == 'general' or category['slug'] == 'general':
+                general_category = category
+        
+        # カテゴリー選択: Announcements > General > 最初のカテゴリー
+        if announcements_category:
+            category_id = announcements_category['id']
+            category_name = announcements_category['name']
+            print(f"  ✅ Found Announcements category for meeting template")
+        elif general_category:
             category_id = general_category['id']
             category_name = general_category['name']
+            print(f"  ℹ️ Using General category (Announcements not found)")
         else:
             category_id = existing_categories[0]['id']
             category_name = existing_categories[0]['name']
+            print(f"  ⚠️ Using first available category: {category_name}")
         
         print(f"  📝 Using category: {category_name}")
         print(f"  📋 Creating meeting minutes template...")

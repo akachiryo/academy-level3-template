@@ -7,6 +7,7 @@ GitHub Projects V2作成スクリプト
 import os
 import requests
 import time
+from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 
 # 環境変数から設定を取得
@@ -81,6 +82,52 @@ def get_repository_info() -> Optional[Dict]:
         }
     return None
 
+def generate_sprint_options() -> List[str]:
+    """Sprint選択肢を動的生成（3ヶ月分）"""
+    start_date = datetime.now()
+    options = []
+    
+    for i in range(13):  # 約3ヶ月分（13週間）
+        sprint_start = start_date + timedelta(weeks=i)
+        sprint_end = sprint_start + timedelta(days=6)
+        
+        # 日付フォーマット: 月/日 形式
+        sprint_name = f"Sprint {i+1} ({sprint_start.month}/{sprint_start.day}-{sprint_end.month}/{sprint_end.day})"
+        options.append(sprint_name)
+    
+    return options
+
+def get_existing_fields(project_id: str) -> Dict[str, str]:
+    """プロジェクトの既存フィールドを取得"""
+    query = """
+    query($projectId: ID!) {
+        node(id: $projectId) {
+            ... on ProjectV2 {
+                fields(first: 100) {
+                    nodes {
+                        ... on ProjectV2SingleSelectField {
+                            id
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+    """
+    
+    variables = {'projectId': project_id}
+    result = graphql_request(query, variables)
+    
+    fields = {}
+    if result and 'node' in result:
+        field_nodes = result['node'].get('fields', {}).get('nodes', [])
+        for field in field_nodes:
+            if field and 'name' in field:
+                fields[field['name']] = field['id']
+    
+    return fields
+
 def create_custom_field(project_id: str, field_name: str, options: List[str]) -> Optional[str]:
     """プロジェクトにカスタムフィールドを作成"""
     # API Reference: https://docs.github.com/en/graphql/reference/mutations#createprojectv2field
@@ -133,6 +180,65 @@ def create_custom_field(project_id: str, field_name: str, options: List[str]) ->
         print(f"❌ Failed to create custom field: {field_name}")
         return None
 
+def setup_project_fields(project_id: str, project_title: str) -> Dict[str, str]:
+    """プロジェクトにカスタムフィールドを設定"""
+    created_fields = {}
+    
+    # 既存フィールドをチェック
+    existing_fields = get_existing_fields(project_id)
+    print(f"\n📝 Setting up fields for: {project_title}")
+    print(f"  • Found {len(existing_fields)} existing fields")
+    
+    # Sprint選択肢を生成
+    sprint_options = generate_sprint_options()
+    
+    if "タスク" in project_title:
+        # タスクプロジェクト: 計画pt、実績pt、Sprint
+        point_options = ["1", "2", "3", "5", "8", "13"]
+        
+        # 計画ptフィールド
+        if "計画pt" not in existing_fields:
+            field_id = create_custom_field(project_id, "計画pt", point_options)
+            if field_id:
+                created_fields["計画pt"] = field_id
+        else:
+            print(f"  ℹ️ Field already exists: 計画pt")
+        
+        # 実績ptフィールド
+        if "実績pt" not in existing_fields:
+            field_id = create_custom_field(project_id, "実績pt", point_options)
+            if field_id:
+                created_fields["実績pt"] = field_id
+        else:
+            print(f"  ℹ️ Field already exists: 実績pt")
+        
+        # Sprintフィールド
+        if "Sprint" not in existing_fields:
+            field_id = create_custom_field(project_id, "Sprint", sprint_options)
+            if field_id:
+                created_fields["Sprint"] = field_id
+        else:
+            print(f"  ℹ️ Field already exists: Sprint")
+        
+        # 従来のPointフィールドも維持（後方互換性）
+        if "Point" not in existing_fields:
+            field_id = create_custom_field(project_id, "Point", point_options)
+            if field_id:
+                created_fields["Point"] = field_id
+    
+    elif "テスト" in project_title:
+        # テストプロジェクト: Sprintのみ
+        if "Sprint" not in existing_fields:
+            field_id = create_custom_field(project_id, "Sprint", sprint_options)
+            if field_id:
+                created_fields["Sprint"] = field_id
+        else:
+            print(f"  ℹ️ Field already exists: Sprint")
+    
+    # KPTプロジェクトには追加フィールドなし
+    
+    return created_fields
+
 def create_project(title: str, repo_info: Dict) -> Optional[str]:
     """プロジェクトを作成"""
     # API Reference: https://docs.github.com/en/graphql/reference/mutations#createprojectv2
@@ -168,11 +274,11 @@ def create_project(title: str, repo_info: Dict) -> Optional[str]:
 def main():
     """メイン処理"""
     print("=" * 60)
-    print("📊 GITHUB PROJECTS CREATION v3.0 (CONSOLIDATED)")
+    print("📊 GITHUB PROJECTS CREATION v4.0 (ENHANCED FIELDS)")
     print("=" * 60)
     print(f"📦 Repository: {GITHUB_REPOSITORY}")
     print(f"⏰ Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"🔧 Script: create_projects.py v3.0")
+    print(f"🔧 Script: create_projects.py v4.0")
     print("=" * 60)
     
     # リポジトリ情報取得
@@ -207,21 +313,14 @@ def main():
             print(f"🆔 Using existing project ID: {existing_project['id']}")
             skipped_projects[project_title] = existing_project['id']
             created_projects[project_title] = existing_project['id']
+            # 既存プロジェクトにもフィールドを追加/更新
+            setup_project_fields(existing_project['id'], project_title)
         else:
             project_id = create_project(project_title, repo_info)
             if project_id:
                 created_projects[project_title] = project_id
-            
-                # "タスク" プロジェクトにのみポイントフィールドを追加
-                if "タスク" in project_title:
-                    print(f"\n📝 Adding custom field to: {project_title}")
-                    point_options = ["1", "2", "3", "5", "8", "13"]
-                    field_id = create_custom_field(project_id, "Point", point_options)
-                    
-                    if field_id:
-                        # フィールドIDも保存（後で使用）
-                        with open('point_field.txt', 'w', encoding='utf-8') as f:
-                            f.write(f"{project_title}:{project_id}:{field_id}")
+                # プロジェクトにカスタムフィールドを設定
+                setup_project_fields(project_id, project_title)
         
         # Rate limit対策
         time.sleep(2)

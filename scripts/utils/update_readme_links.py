@@ -1,48 +1,19 @@
 #!/usr/bin/env python3
 """
-README内のリンクを動的に更新するスクリプト
+README内のリンクを動的に更新するスクリプト v5.0 (Refactored)
+共通ライブラリを使用してリファクタリング済み
 """
 
+import sys
 import os
 import re
-import requests
 from typing import Dict, List, Optional
 
-# 環境変数から設定を取得
-TEAM_SETUP_TOKEN = os.environ.get('TEAM_SETUP_TOKEN')
-GITHUB_REPOSITORY = os.environ.get('GITHUB_REPOSITORY')
+# 共通ライブラリをインポート
+sys.path.append('scripts')
+from common.github_api import GitHubAPI
 
-if not TEAM_SETUP_TOKEN or not GITHUB_REPOSITORY:
-    raise ValueError("TEAM_SETUP_TOKEN and GITHUB_REPOSITORY environment variables are required")
-
-REPO_OWNER, REPO_NAME = GITHUB_REPOSITORY.split('/')
-
-# GitHub GraphQL API設定
-GRAPHQL_URL = 'https://api.github.com/graphql'
-HEADERS = {
-    'Authorization': f'Bearer {TEAM_SETUP_TOKEN}',
-    'Content-Type': 'application/json'
-}
-
-def graphql_request(query: str, variables: Dict = None) -> Dict:
-    """GraphQL APIリクエスト実行"""
-    payload = {'query': query}
-    if variables:
-        payload['variables'] = variables
-    
-    response = requests.post(GRAPHQL_URL, json=payload, headers=HEADERS)
-    if response.status_code != 200:
-        print(f"❌ GraphQL Error: {response.status_code}")
-        return {}
-    
-    data = response.json()
-    if 'errors' in data:
-        print(f"❌ GraphQL Errors: {data['errors']}")
-        return {}
-    
-    return data.get('data', {})
-
-def get_project_urls() -> Dict[str, str]:
+def get_project_urls(github_api: GitHubAPI) -> Dict[str, str]:
     """プロジェクトのURLを取得"""
     query = """
     query($owner: String!, $name: String!) {
@@ -58,11 +29,11 @@ def get_project_urls() -> Dict[str, str]:
     """
     
     variables = {
-        'owner': REPO_OWNER,
-        'name': REPO_NAME
+        'owner': github_api.owner,
+        'name': github_api.repo_name
     }
     
-    result = graphql_request(query, variables)
+    result = github_api.graphql_request(query, variables)
     project_urls = {}
     
     if result and 'repository' in result:
@@ -77,7 +48,7 @@ def get_project_urls() -> Dict[str, str]:
     
     return project_urls
 
-def get_issue_urls() -> Dict[str, str]:
+def get_issue_urls(github_api: GitHubAPI) -> Dict[str, str]:
     """特定のIssueのURLを取得"""
     query = """
     query($owner: String!, $name: String!) {
@@ -94,11 +65,11 @@ def get_issue_urls() -> Dict[str, str]:
     """
     
     variables = {
-        'owner': REPO_OWNER,
-        'name': REPO_NAME
+        'owner': github_api.owner,
+        'name': github_api.repo_name
     }
     
-    result = graphql_request(query, variables)
+    result = github_api.graphql_request(query, variables)
     issue_urls = {}
     
     if result and 'repository' in result:
@@ -111,7 +82,7 @@ def get_issue_urls() -> Dict[str, str]:
     
     return issue_urls
 
-def get_discussion_urls() -> Dict[str, str]:
+def get_discussion_urls(github_api: GitHubAPI) -> Dict[str, str]:
     """DiscussionのURLを取得"""
     query = """
     query($owner: String!, $name: String!) {
@@ -127,11 +98,11 @@ def get_discussion_urls() -> Dict[str, str]:
     """
     
     variables = {
-        'owner': REPO_OWNER,
-        'name': REPO_NAME
+        'owner': github_api.owner,
+        'name': github_api.repo_name
     }
     
-    result = graphql_request(query, variables)
+    result = github_api.graphql_request(query, variables)
     discussion_urls = {}
     
     if result and 'repository' in result:
@@ -146,19 +117,19 @@ def get_discussion_urls() -> Dict[str, str]:
     
     return discussion_urls
 
-def update_readme():
+def update_readme(github_api: GitHubAPI):
     """READMEファイルを更新"""
     readme_path = 'README.md'
     
     # URLを取得
     print("📊 Getting project URLs...")
-    project_urls = get_project_urls()
+    project_urls = get_project_urls(github_api)
     
     print("📋 Getting issue URLs...")
-    issue_urls = get_issue_urls()
+    issue_urls = get_issue_urls(github_api)
     
     print("💬 Getting discussion URLs...")
-    discussion_urls = get_discussion_urls()
+    discussion_urls = get_discussion_urls(github_api)
     
     # READMEを読み込み
     with open(readme_path, 'r', encoding='utf-8') as f:
@@ -193,17 +164,32 @@ def update_readme():
             f.write(f"{key}: {url}\n")
 
 def main():
-    print("=" * 50)
-    print("🔗 Updating README Links")
-    print("=" * 50)
+    """メイン処理"""
+    print("=" * 60)
+    print("🔗 README LINKS UPDATE v5.0 (Refactored)")
+    print("=" * 60)
+    print(f"⏰ Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"🔧 Script: update_readme_links.py v5.0 (Refactored)")
+    print("=" * 60)
     
     try:
-        update_readme()
-        print("✅ README links update complete!")
+        # GitHub APIクラスの初期化
+        github_api = GitHubAPI()
+        print(f"📦 Repository: {github_api.repository}")
+        
+        # READMEを更新
+        update_readme(github_api)
+        print("\n✅ README links update complete!")
+        
+        return 0
+        
     except Exception as e:
-        print(f"❌ Error updating README: {e}")
+        print(f"\n💥 Unexpected error: {str(e)}")
+        print(f"🔧 Error type: {type(e).__name__}")
         import traceback
         traceback.print_exc()
+        return 1
 
 if __name__ == "__main__":
-    main()
+    import time
+    exit(main())

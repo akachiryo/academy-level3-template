@@ -1,86 +1,19 @@
 #!/usr/bin/env python3
 """
-GitHub Projects V2作成スクリプト
+GitHub Projects V2作成スクリプト (Refactored)
 3つの独立したプロジェクトを作成する
+共通ライブラリを使用してリファクタリング済み
 """
 
-import os
-import requests
+import sys
 import time
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 
-# 環境変数から設定を取得
-TEAM_SETUP_TOKEN = os.environ.get('TEAM_SETUP_TOKEN')
-GITHUB_REPOSITORY = os.environ.get('GITHUB_REPOSITORY')
+# 共通ライブラリをインポート
+sys.path.append('scripts')
+from common.github_api import GitHubAPI
 
-if not TEAM_SETUP_TOKEN or not GITHUB_REPOSITORY:
-    raise ValueError("TEAM_SETUP_TOKEN and GITHUB_REPOSITORY environment variables are required")
-
-REPO_OWNER, REPO_NAME = GITHUB_REPOSITORY.split('/')
-
-# GitHub GraphQL API設定
-# API Reference: https://docs.github.com/en/graphql/reference/mutations#createprojectv2
-GRAPHQL_URL = 'https://api.github.com/graphql'
-HEADERS = {
-    'Authorization': f'Bearer {TEAM_SETUP_TOKEN}',
-    'Content-Type': 'application/json'
-}
-
-def graphql_request(query: str, variables: Dict = None) -> Dict:
-    """GraphQL APIリクエスト実行"""
-    payload = {'query': query}
-    if variables:
-        payload['variables'] = variables
-    
-    response = requests.post(GRAPHQL_URL, json=payload, headers=HEADERS)
-    if response.status_code != 200:
-        print(f"❌ GraphQL Error: {response.status_code} - {response.text}")
-        return {}
-    
-    data = response.json()
-    if 'errors' in data:
-        print(f"❌ GraphQL Errors: {data['errors']}")
-        return {}
-    
-    return data.get('data', {})
-
-def get_repository_info() -> Optional[Dict]:
-    """リポジトリ情報と既存プロジェクトを取得"""
-    # API Reference: https://docs.github.com/en/graphql/reference/queries#repository
-    query = """
-    query($owner: String!, $name: String!) {
-        repository(owner: $owner, name: $name) {
-            id
-            owner {
-                id
-                __typename
-            }
-            projectsV2(first: 100) {
-                nodes {
-                    id
-                    title
-                    number
-                    url
-                }
-            }
-        }
-    }
-    """
-    
-    variables = {
-        'owner': REPO_OWNER,
-        'name': REPO_NAME
-    }
-    
-    result = graphql_request(query, variables)
-    if result and 'repository' in result:
-        return {
-            'repository_id': result['repository']['id'],
-            'owner_id': result['repository']['owner']['id'],
-            'existing_projects': result['repository']['projectsV2']['nodes']
-        }
-    return None
 
 def generate_sprint_options() -> List[str]:
     """Sprint選択肢を動的生成（3ヶ月分）"""
@@ -97,7 +30,7 @@ def generate_sprint_options() -> List[str]:
     
     return options
 
-def get_existing_fields(project_id: str) -> Dict[str, str]:
+def get_existing_fields(github_api: GitHubAPI, project_id: str) -> Dict[str, str]:
     """プロジェクトの既存フィールドを取得"""
     query = """
     query($projectId: ID!) {
@@ -117,7 +50,7 @@ def get_existing_fields(project_id: str) -> Dict[str, str]:
     """
     
     variables = {'projectId': project_id}
-    result = graphql_request(query, variables)
+    result = github_api.graphql_request(query, variables)
     
     fields = {}
     if result and 'node' in result:
@@ -128,7 +61,7 @@ def get_existing_fields(project_id: str) -> Dict[str, str]:
     
     return fields
 
-def create_custom_field(project_id: str, field_name: str, options: List[str]) -> Optional[str]:
+def create_custom_field(github_api: GitHubAPI, project_id: str, field_name: str, options: List[str]) -> Optional[str]:
     """プロジェクトにカスタムフィールドを作成"""
     # API Reference: https://docs.github.com/en/graphql/reference/mutations#createprojectv2field
     query = """
@@ -169,7 +102,7 @@ def create_custom_field(project_id: str, field_name: str, options: List[str]) ->
         'options': field_options
     }
     
-    result = graphql_request(query, variables)
+    result = github_api.graphql_request(query, variables)
     if result and 'createProjectV2Field' in result:
         field = result['createProjectV2Field']['projectV2Field']
         print(f"✅ Created custom field: {field['name']}")
@@ -180,12 +113,12 @@ def create_custom_field(project_id: str, field_name: str, options: List[str]) ->
         print(f"❌ Failed to create custom field: {field_name}")
         return None
 
-def setup_project_fields(project_id: str, project_title: str) -> Dict[str, str]:
+def setup_project_fields(github_api: GitHubAPI, project_id: str, project_title: str) -> Dict[str, str]:
     """プロジェクトにカスタムフィールドを設定"""
     created_fields = {}
     
     # 既存フィールドをチェック
-    existing_fields = get_existing_fields(project_id)
+    existing_fields = get_existing_fields(github_api, project_id)
     print(f"\n📝 Setting up fields for: {project_title}")
     print(f"  • Found {len(existing_fields)} existing fields")
     
@@ -198,7 +131,7 @@ def setup_project_fields(project_id: str, project_title: str) -> Dict[str, str]:
         
         # 計画ptフィールド
         if "計画pt" not in existing_fields:
-            field_id = create_custom_field(project_id, "計画pt", point_options)
+            field_id = create_custom_field(github_api, project_id, "計画pt", point_options)
             if field_id:
                 created_fields["計画pt"] = field_id
         else:
@@ -206,7 +139,7 @@ def setup_project_fields(project_id: str, project_title: str) -> Dict[str, str]:
         
         # 実績ptフィールド
         if "実績pt" not in existing_fields:
-            field_id = create_custom_field(project_id, "実績pt", point_options)
+            field_id = create_custom_field(github_api, project_id, "実績pt", point_options)
             if field_id:
                 created_fields["実績pt"] = field_id
         else:
@@ -214,7 +147,7 @@ def setup_project_fields(project_id: str, project_title: str) -> Dict[str, str]:
         
         # Sprintフィールド
         if "Sprint" not in existing_fields:
-            field_id = create_custom_field(project_id, "Sprint", sprint_options)
+            field_id = create_custom_field(github_api, project_id, "Sprint", sprint_options)
             if field_id:
                 created_fields["Sprint"] = field_id
         else:
@@ -224,7 +157,7 @@ def setup_project_fields(project_id: str, project_title: str) -> Dict[str, str]:
     elif "テスト" in project_title:
         # テストプロジェクト: Sprintのみ
         if "Sprint" not in existing_fields:
-            field_id = create_custom_field(project_id, "Sprint", sprint_options)
+            field_id = create_custom_field(github_api, project_id, "Sprint", sprint_options)
             if field_id:
                 created_fields["Sprint"] = field_id
         else:
@@ -234,7 +167,7 @@ def setup_project_fields(project_id: str, project_title: str) -> Dict[str, str]:
     
     return created_fields
 
-def create_project(title: str, repo_info: Dict) -> Optional[str]:
+def create_project(github_api: GitHubAPI, title: str) -> Optional[str]:
     """プロジェクトを作成"""
     # API Reference: https://docs.github.com/en/graphql/reference/mutations#createprojectv2
     query = """
@@ -250,13 +183,18 @@ def create_project(title: str, repo_info: Dict) -> Optional[str]:
     }
     """
     
+    # リポジトリ情報を取得
+    repo_info = github_api.get_repository_info()
+    if not repo_info:
+        return None
+        
     variables = {
         'ownerId': repo_info['owner_id'],
         'repositoryId': repo_info['repository_id'],
         'title': title
     }
     
-    result = graphql_request(query, variables)
+    result = github_api.graphql_request(query, variables)
     if result and 'createProjectV2' in result:
         project = result['createProjectV2']['projectV2']
         print(f"✅ Created project: {project['title']} (#{project['number']})")
@@ -269,18 +207,22 @@ def create_project(title: str, repo_info: Dict) -> Optional[str]:
 def main():
     """メイン処理"""
     print("=" * 60)
-    print("📊 GITHUB PROJECTS CREATION v4.0 (ENHANCED FIELDS)")
+    print("📊 GITHUB PROJECTS CREATION v5.0 (Refactored)")
     print("=" * 60)
-    print(f"📦 Repository: {GITHUB_REPOSITORY}")
     print(f"⏰ Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"🔧 Script: create_projects.py v4.0")
+    print(f"🔧 Script: create_projects.py v5.0 (Refactored)")
     print("=" * 60)
     
-    # リポジトリ情報取得
-    repo_info = get_repository_info()
-    if not repo_info:
-        print("❌ Failed to get repository information")
-        return 1
+    try:
+        # GitHub APIクラスの初期化
+        github_api = GitHubAPI()
+        print(f"📦 Repository: {github_api.repository}")
+        
+        # リポジトリ情報取得
+        repo_info = github_api.get_repository_info()
+        if not repo_info:
+            print("❌ Failed to get repository information")
+            return 1
     
     # 既存プロジェクトをチェック
     existing_projects = repo_info.get('existing_projects', [])
@@ -309,13 +251,13 @@ def main():
             skipped_projects[project_title] = existing_project['id']
             created_projects[project_title] = existing_project['id']
             # 既存プロジェクトにもフィールドを追加/更新
-            setup_project_fields(existing_project['id'], project_title)
+            setup_project_fields(github_api, existing_project['id'], project_title)
         else:
-            project_id = create_project(project_title, repo_info)
+            project_id = create_project(github_api, project_title)
             if project_id:
                 created_projects[project_title] = project_id
                 # プロジェクトにカスタムフィールドを設定
-                setup_project_fields(project_id, project_title)
+                setup_project_fields(github_api, project_id, project_title)
         
         # Rate limit対策
         time.sleep(2)
@@ -351,9 +293,14 @@ def main():
             print(f"  • {title}{status}")
     
     print(f"\n🔗 Access your projects:")
-    print(f"  https://github.com/{GITHUB_REPOSITORY}/projects")
+    print(f"  https://github.com/{github_api.repository}/projects")
     
     return 0
+    
+    except Exception as e:
+        print(f"\n💥 Unexpected error: {str(e)}")
+        print(f"🔧 Error type: {type(e).__name__}")
+        return 1
 
 if __name__ == '__main__':
     exit(main())

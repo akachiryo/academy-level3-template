@@ -98,14 +98,14 @@ def verify_essential_files():
     
     essential_files = {
         ".github/workflows/team-setup.yml": "Main workflow file",
-        "scripts/create_projects.py": "Projects creation script",
-        "scripts/setup_discussions.py": "Discussions setup script", 
-        "scripts/setup_wiki.py": "Wiki setup script",
-        "scripts/create_issues_batch.py": "Issues batch creation script",
-        "scripts/verify_environment.py": "Environment verification script",
-        "data/imakoko_sns_tables.csv": "Database tables CSV",
-        "data/tasks_for_issues.csv": "Task issues CSV",
-        "data/tests_for_issues.csv": "Test issues CSV"
+        "scripts/setup/create_projects.py": "Projects creation script",
+        "scripts/setup/setup_discussions.py": "Discussions setup script", 
+        "scripts/setup/create_wiki_discussions.py": "Wiki discussions creation script",
+        "scripts/create_all_issues_smart.py": "Issues batch creation script",
+        "scripts/maintenance/verify_environment.py": "Environment verification script",
+        "data/imakoko_sns_tables.xlsx": "Database tables Excel",
+        "scripts/common/github_api.py": "Common GitHub API library",
+        "scripts/config/issue_types.json": "Issue types configuration"
     }
     
     missing_files = []

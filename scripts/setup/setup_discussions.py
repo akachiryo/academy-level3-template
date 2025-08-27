@@ -124,16 +124,23 @@ def get_existing_discussions(github_api: GitHubAPI, repository_id: str) -> List[
         return discussions
     return []
 
-def create_category_via_web_api(github_api: GitHubAPI, repository_id: str, name: str, description: str) -> Optional[str]:
-    """WebAPI経由でDiscussionカテゴリーを作成（GraphQLで制限がある場合）"""
-    # GraphQLのcreateDiscussionCategoryを使用
-    category_id = github_api.create_discussion_category(name, description, "📋")
-    if category_id:
-        print(f"✅ Created discussion category: {name}")
-        return category_id
-    else:
-        print(f"❌ Failed to create discussion category: {name}")
-        return None
+def find_suitable_category(categories: List[Dict]) -> Optional[str]:
+    """適切なDiscussionカテゴリーを検索"""
+    # 議事録カテゴリーが存在するかチェック
+    for category in categories:
+        if category['name'] == '議事録':
+            print(f"✅ Found existing '議事録' category: {category['id']}")
+            return category['id']
+    
+    # Generalカテゴリーをフォールバックとして使用
+    for category in categories:
+        if category['name'].lower() == 'general' or category.get('slug') == 'general':
+            print(f"ℹ️ Using 'General' category as fallback: {category['id']}")
+            print(f"💡 Tip: Create a '議事録' category manually in repository settings for better organization")
+            return category['id']
+    
+    print("❌ No suitable category found (neither '議事録' nor 'General')")
+    return None
 
 def create_discussion(github_api: GitHubAPI, repository_id: str, category_id: str, title: str, body: str) -> bool:
     """Discussionを作成"""
@@ -171,27 +178,18 @@ def main():
         category_names = [cat['name'] for cat in categories]
         print(f"\n📋 Existing categories: {', '.join(category_names) if category_names else 'None'}")
         
-        # 議事録カテゴリーが存在するかチェック
-        meeting_category_id = None
-        for category in categories:
-            if category['name'] == '議事録':
-                meeting_category_id = category['id']
-                print(f"ℹ️ Found existing '議事録' category")
-                break
+        # 適切なカテゴリーを検索（議事録 → General の順）
+        print(f"\n🔍 Looking for suitable discussion category...")
+        meeting_category_id = find_suitable_category(categories)
         
-        # 議事録カテゴリーが存在しない場合は作成
         if not meeting_category_id:
-            print("📝 Creating '議事録' discussion category...")
-            meeting_category_id = create_category_via_web_api(
-                github_api,
-                repository_id,
-                "議事録",
-                "チーム開発の議事録を管理するカテゴリーです"
-            )
-            
-            if not meeting_category_id:
-                print("❌ Failed to create meeting category")
-                return 1
+            print("\n⚠️ No suitable category found for discussions")
+            print("💡 Please create categories manually:")
+            print(f"   1. Go to https://github.com/{github_api.repository}/settings")
+            print("   2. Scroll to 'Features' → 'Discussions'")
+            print("   3. Click 'Set up discussions' if needed")
+            print("   4. Create a '議事録' category for meeting minutes")
+            return 1
         
         # 既存のDiscussionsをチェック
         existing_discussions = get_existing_discussions(github_api, repository_id)

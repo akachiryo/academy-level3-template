@@ -323,39 +323,8 @@ class GitHubAPI:
             return result['repository']['discussionCategories']['nodes']
         return []
     
-    def create_discussion_category(self, name: str, description: str, emoji: str = "📋") -> Optional[str]:
-        """Discussionカテゴリーを作成"""
-        repo_info = self.get_repository_info()
-        if not repo_info:
-            return None
-        
-        query = """
-        mutation($repositoryId: ID!, $name: String!, $description: String!, $emoji: String!) {
-            createDiscussionCategory(input: {
-                repositoryId: $repositoryId,
-                name: $name,
-                description: $description,
-                emoji: $emoji
-            }) {
-                discussionCategory {
-                    id
-                    name
-                }
-            }
-        }
-        """
-        
-        variables = {
-            'repositoryId': repo_info['repository_id'],
-            'name': name,
-            'description': description,
-            'emoji': emoji
-        }
-        
-        result = self.graphql_request(query, variables)
-        if result and 'createDiscussionCategory' in result:
-            return result['createDiscussionCategory']['discussionCategory']['id']
-        return None
+    # Note: createDiscussionCategory mutation does not exist in GitHub GraphQL API
+    # Discussion categories must be created manually through the GitHub web interface
     
     def create_discussion(self, title: str, body: str, category_id: str) -> Optional[str]:
         """Discussionを作成"""
@@ -392,19 +361,5 @@ class GitHubAPI:
             return result['createDiscussion']['discussion']['id']
         return None
     
-    def delete_discussion_category(self, category_id: str) -> bool:
-        """Discussionカテゴリーを削除"""
-        query = """
-        mutation($categoryId: ID!) {
-            deleteDiscussionCategory(input: {id: $categoryId}) {
-                repository {
-                    id
-                }
-            }
-        }
-        """
-        
-        variables = {'categoryId': category_id}
-        
-        result = self.graphql_request(query, variables)
-        return bool(result and 'deleteDiscussionCategory' in result)
+    # Note: deleteDiscussionCategory mutation does not exist in GitHub GraphQL API
+    # Discussion categories must be managed manually through the GitHub web interface

@@ -261,7 +261,7 @@ def main():
             
             # Rate limit対策
             time.sleep(2)
-    
+        
         # 結果をファイルに保存（他のスクリプトで使用）
         if created_projects:
             project_info = []

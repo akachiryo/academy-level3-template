@@ -154,4 +154,14 @@ def main():
         return 1
 
 if __name__ == '__main__':
+    import sys
+    
+    # コマンドライン引数処理
+    if len(sys.argv) > 1:
+        issue_type = sys.argv[1].lower()
+        if issue_type in ['task', 'test', 'kpt', 'link']:
+            print(f"🎯 Running in {issue_type.upper()} mode")
+            # TODO: ここで特定のIssue種別のみ処理するロジックを実装
+            # 現在は全種別を処理
+    
     exit(main())

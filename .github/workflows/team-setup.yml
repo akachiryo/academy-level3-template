@@ -47,7 +47,7 @@ jobs:
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
         echo "🔍 Running environment verification..."
-        python scripts/verify_environment.py
+        python scripts/maintenance/verify_environment.py
         
     # ===============================
     # Step 1: Create GitHub Projects
@@ -58,7 +58,7 @@ jobs:
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
         echo "📊 Step 1: Creating 3 GitHub Projects..."
-        python scripts/create_projects.py
+        python scripts/setup/create_projects.py
         echo "✅ Projects created successfully"
         echo "📝 Checking project_ids.txt..."
         if [ -f "project_ids.txt" ]; then
@@ -86,7 +86,7 @@ jobs:
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
         echo "💬 Step 2: Setting up Discussions..."
-        python scripts/setup_discussions.py
+        python scripts/setup/setup_discussions.py
         echo "✅ Meeting minutes template created"
         
     # ===============================
@@ -98,7 +98,7 @@ jobs:
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
         echo "📚 Step 3: Creating Wiki content as Discussions..."
-        python scripts/create_wiki_discussions.py
+        python scripts/setup/create_wiki_discussions.py
         echo "✅ Wiki content migration to Discussions complete"
         
     # ===============================
@@ -134,7 +134,7 @@ jobs:
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
         echo "📋 Creating Task Issues (Sequential Job 1/3)..."
-        python scripts/create_task_issues.py
+        python scripts/create_all_issues_smart.py --type task
         echo "✅ Task issues creation completed!"
         
     - name: Upload task results
@@ -175,7 +175,7 @@ jobs:
         echo "🧪 Creating Test Issues (Sequential Job 2/3, GitHub API Compliant)..."
         echo "🎯 Processing all 234 issues with 80 req/min rate limit compliance"
         echo "⏱️ Target: Complete within 10 minutes"
-        python scripts/create_test_issues.py
+        python scripts/create_all_issues_smart.py --type test
         echo "✅ Test issues creation completed!"
         
     - name: Upload test results
@@ -214,7 +214,7 @@ jobs:
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
         echo "🎯 Creating KPT Issues (Sequential Job 3/3)..."
-        python scripts/create_kpt_issues.py
+        python scripts/create_all_issues_smart.py --type kpt
         echo "✅ KPT issues creation completed!"
         
     - name: Upload KPT results
@@ -259,7 +259,7 @@ jobs:
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
         echo "🔗 Linking all created issues to projects..."
-        python scripts/link_all_to_projects.py
+        python scripts/create_all_issues_smart.py --link-only
         echo "✅ Project linking completed!"
         
         
@@ -289,7 +289,7 @@ jobs:
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
         echo "📝 Updating README with dynamic links..."
-        python scripts/update_readme_links.py
+        python scripts/utils/update_readme_links.py
         echo "✅ README links updated!"
         
     - name: Commit README updates

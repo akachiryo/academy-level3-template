@@ -223,80 +223,80 @@ def main():
         if not repo_info:
             print("❌ Failed to get repository information")
             return 1
-    
-    # 既存プロジェクトをチェック
-    existing_projects = repo_info.get('existing_projects', [])
-    existing_titles = {p['title']: p for p in existing_projects}
-    
-    print(f"\n🔍 Found {len(existing_projects)} existing projects")
-    for project in existing_projects:
-        print(f"  • {project['title']} (#{project['number']})")
-    
-    # 3つのプロジェクトを作成
-    projects = [
-        "イマココSNS（タスク）",
-        "イマココSNS（テスト）", 
-        "イマココSNS（KPT）"
-    ]
-    
-    created_projects = {}
-    skipped_projects = {}
-    
-    for project_title in projects:
+        
         # 既存プロジェクトをチェック
-        if project_title in existing_titles:
-            existing_project = existing_titles[project_title]
-            print(f"\nℹ️ Project already exists: {project_title}")
-            print(f"🆔 Using existing project ID: {existing_project['id']}")
-            skipped_projects[project_title] = existing_project['id']
-            created_projects[project_title] = existing_project['id']
-            # 既存プロジェクトにもフィールドを追加/更新
-            setup_project_fields(github_api, existing_project['id'], project_title)
-        else:
-            project_id = create_project(github_api, project_title)
-            if project_id:
-                created_projects[project_title] = project_id
-                # プロジェクトにカスタムフィールドを設定
-                setup_project_fields(github_api, project_id, project_title)
+        existing_projects = repo_info.get('existing_projects', [])
+        existing_titles = {p['title']: p for p in existing_projects}
         
-        # Rate limit対策
-        time.sleep(2)
-    
-    # 結果をファイルに保存（他のスクリプトで使用）
-    if created_projects:
-        project_info = []
-        for title, project_id in created_projects.items():
-            project_info.append(f"{title}:{project_id}")
+        print(f"\n🔍 Found {len(existing_projects)} existing projects")
+        for project in existing_projects:
+            print(f"  • {project['title']} (#{project['number']})")
         
-        with open('project_ids.txt', 'w', encoding='utf-8') as f:
-            f.write('\n'.join(project_info))
+        # 3つのプロジェクトを作成
+        projects = [
+            "イマココSNS（タスク）",
+            "イマココSNS（テスト）", 
+            "イマココSNS（KPT）"
+        ]
+        
+        created_projects = {}
+        skipped_projects = {}
+        
+        for project_title in projects:
+            # 既存プロジェクトをチェック
+            if project_title in existing_titles:
+                existing_project = existing_titles[project_title]
+                print(f"\nℹ️ Project already exists: {project_title}")
+                print(f"🆔 Using existing project ID: {existing_project['id']}")
+                skipped_projects[project_title] = existing_project['id']
+                created_projects[project_title] = existing_project['id']
+                # 既存プロジェクトにもフィールドを追加/更新
+                setup_project_fields(github_api, existing_project['id'], project_title)
+            else:
+                project_id = create_project(github_api, project_title)
+                if project_id:
+                    created_projects[project_title] = project_id
+                    # プロジェクトにカスタムフィールドを設定
+                    setup_project_fields(github_api, project_id, project_title)
+            
+            # Rate limit対策
+            time.sleep(2)
     
-    # プロジェクトステータスを保存（Issue作成制御用）
-    all_skipped = len(skipped_projects) == len(projects)
-    with open('project_status.txt', 'w', encoding='utf-8') as f:
-        if all_skipped:
-            f.write('ALL_SKIPPED')
-            print(f"\n📝 Status: ALL_SKIPPED (all projects already exist)")
-        else:
-            f.write('CREATED')
-            print(f"\n📝 Status: CREATED (some projects were created)")
-    
-    print(f"\n✨ Project setup completed!")
-    print(f"📌 Summary:")
-    print(f"  • Created {len(created_projects) - len(skipped_projects)} new projects")
-    print(f"  • Reused {len(skipped_projects)} existing projects")
-    
-    if created_projects:
-        print(f"\n📊 All projects:")
-        for title in created_projects:
-            status = " (existing)" if title in skipped_projects else " (new)"
-            print(f"  • {title}{status}")
-    
-    print(f"\n🔗 Access your projects:")
-    print(f"  https://github.com/{github_api.repository}/projects")
-    
-    return 0
-    
+        # 結果をファイルに保存（他のスクリプトで使用）
+        if created_projects:
+            project_info = []
+            for title, project_id in created_projects.items():
+                project_info.append(f"{title}:{project_id}")
+            
+            with open('project_ids.txt', 'w', encoding='utf-8') as f:
+                f.write('\n'.join(project_info))
+        
+        # プロジェクトステータスを保存（Issue作成制御用）
+        all_skipped = len(skipped_projects) == len(projects)
+        with open('project_status.txt', 'w', encoding='utf-8') as f:
+            if all_skipped:
+                f.write('ALL_SKIPPED')
+                print(f"\n📝 Status: ALL_SKIPPED (all projects already exist)")
+            else:
+                f.write('CREATED')
+                print(f"\n📝 Status: CREATED (some projects were created)")
+        
+        print(f"\n✨ Project setup completed!")
+        print(f"📌 Summary:")
+        print(f"  • Created {len(created_projects) - len(skipped_projects)} new projects")
+        print(f"  • Reused {len(skipped_projects)} existing projects")
+        
+        if created_projects:
+            print(f"\n📊 All projects:")
+            for title in created_projects:
+                status = " (existing)" if title in skipped_projects else " (new)"
+                print(f"  • {title}{status}")
+        
+        print(f"\n🔗 Access your projects:")
+        print(f"  https://github.com/{github_api.repository}/projects")
+        
+        return 0
+        
     except Exception as e:
         print(f"\n💥 Unexpected error: {str(e)}")
         print(f"🔧 Error type: {type(e).__name__}")

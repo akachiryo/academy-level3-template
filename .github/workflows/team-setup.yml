@@ -1,4 +1,4 @@
-name: 🚀 Team Development Setup v5.0 (DISCUSSIONS MIGRATION)
+name: 🚀 Team Development Setup
 
 on:
   workflow_dispatch:
@@ -18,10 +18,10 @@ jobs:
     - name: 🔍 Environment Diagnostics
       run: |
         echo "=========================================================="
-        echo "🚀 TEAM SETUP WORKFLOW v5.0 (DISCUSSIONS MIGRATION) STARTING"
+        echo "🚀 TEAM SETUP WORKFLOW STARTING"
         echo "=========================================================="
         echo "⏰ Timestamp: $(date)"
-        echo "🔧 Workflow: team-setup.yml v5.0 (Wiki → Discussions)"
+        echo "🔧 Workflow: team-setup.yml (Wiki → Discussions)"
         echo "📂 Working Directory: $(pwd)"
         echo "👤 Actor: ${{ github.actor }}"
         echo "📦 Repository: ${{ github.repository }}"
@@ -57,7 +57,7 @@ jobs:
         TEAM_SETUP_TOKEN: ${{ secrets.TEAM_SETUP_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
-        echo "📊 Step 1: Creating 3 GitHub Projects (v3.0)..."
+        echo "📊 Step 1: Creating 3 GitHub Projects..."
         python scripts/create_projects.py
         echo "✅ Projects created successfully"
         echo "📝 Checking project_ids.txt..."
@@ -85,7 +85,7 @@ jobs:
         TEAM_SETUP_TOKEN: ${{ secrets.TEAM_SETUP_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
-        echo "💬 Step 2: Setting up Discussions (v4.0)..."
+        echo "💬 Step 2: Setting up Discussions..."
         python scripts/setup_discussions.py
         echo "✅ Meeting minutes template created"
         
@@ -264,11 +264,48 @@ jobs:
         
         
   # ===============================
+  # Update README Links
+  # ===============================
+  update-readme:
+    runs-on: ubuntu-latest
+    needs: [link-to-projects]
+    if: success()
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: pip install requests
+        
+    - name: 📝 Update README Links
+      env:
+        TEAM_SETUP_TOKEN: ${{ secrets.TEAM_SETUP_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+      run: |
+        echo "📝 Updating README with dynamic links..."
+        python scripts/update_readme_links.py
+        echo "✅ README links updated!"
+        
+    - name: Commit README updates
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add README.md
+        git diff --cached --quiet || git commit -m "📝 Update README with dynamic links"
+        git push || echo "No changes to push"
+        
+  # ===============================
   # Final Summary Job
   # ===============================
   final-summary:
     runs-on: ubuntu-latest
-    needs: [setup-environment, create-task-issues, create-test-issues, create-kpt-issues, link-to-projects]
+    needs: [setup-environment, create-task-issues, create-test-issues, create-kpt-issues, link-to-projects, update-readme]
     if: always()
     
     steps:
@@ -283,12 +320,12 @@ jobs:
         echo ""
         echo "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉"
         echo "🎉                                        🎉"
-        echo "🎉    チーム開発環境セットアップ完了！ v4.0   🎉"
-        echo "🎉    Team Development Setup Complete! v4.0   🎉"
+        echo "🎉    チーム開発環境セットアップ完了！    🎉"
+        echo "🎉    Team Development Setup Complete!    🎉"
         echo "🎉           (PARALLEL OPTIMIZED)             🎉"
         echo "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉"
         echo ""
-        echo "🆕 VERSION: v5.0 (WIKI TO DISCUSSIONS MIGRATION)"
+        echo "🆕 WIKI TO DISCUSSIONS MIGRATION COMPLETE"
         echo "✅ Successfully Created:"
         echo "• 📊 3 GitHub Projects V2"
         echo "• 📋 Task Issues (parallel job)"
@@ -319,11 +356,11 @@ jobs:
         echo "• Issues: https://github.com/${{ github.repository }}/issues"
         echo "• Discussions: https://github.com/${{ github.repository }}/discussions"
         echo ""
-        echo "📋 New in v5.0:"
+        echo "📋 Features:"
         echo "• Wiki content migrated to Discussions (private repo compatible)"
         echo "• Table design, rules, and project info available as discussions"
         echo ""
-        echo "🚀 v5.0 Improvements:"
+        echo "🚀 Improvements:"
         echo "• Wiki content → Discussions migration (private repo compatible)"
         echo "• Table design automatically generated from CSV data"
         echo "• All documentation accessible in Discussions tab"

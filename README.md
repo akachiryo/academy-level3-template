@@ -7,18 +7,23 @@
 ### 1. GitHub Personal Access Tokenの作成
 
 1. **Personal Access Tokenの作成**
-   - GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+   - 画面右上の自身のアイコン → サイドバー → Settings → Developer settings → Personal access tokens → Tokens (classic)
    - Generate new token (classic) をクリック
-   - 必要なスコープ:
+   - Noteに任意の名前(academy-token等)を入力
+   - Expirationは「Cusom」を選択し、１年後の日付を入力
+   - 下記にチェックをつける:
      - ✅ `repo` (Full control of private repositories)
      - ✅ `project` (Full control of projects)
      - ✅ `write:discussion` (Read and write team discussions)
+   - 「Generate token」ボタンをクリック
+   - tokenが生成され画面に表示されるため、メモする
 
 2. **Repository Secretへの登録**
-   - このリポジトリ → Settings → Secrets and variables → Actions
-   - New repository secret
-   - Name: `TEAM_SETUP_TOKEN`
-   - Secret: 作成したトークンを貼り付け
+   - cloneしたリポジトリ → 「Settings」タブ → Secrets and variables → Actions
+   - 「New repository secret」ボタンクリック
+   - Name: `TEAM_SETUP_TOKEN`を入力
+   - Secret: メモしたトークンを貼り付け
+   - 「Add secret」ボタン押下
 
 ### 2. 自動セットアップの実行
 [![🚀 Team Setup](https://img.shields.io/badge/🚀_Team_Setup_v5.0-Click_to_Start-success?style=for-the-badge&logo=github)](../../actions/workflows/team-setup.yml)

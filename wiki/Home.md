@@ -1,14 +1,25 @@
-# イマココSNS Wiki
+# プロジェクト概要
+## サービス名
+イマココSNS
 
-イマココSNS開発プロジェクトのWikiページです。
+ ## サービス概要
+TwitterライクなUI投稿をすると自動で現在地も一緒に投稿される
 
-## 📋 ドキュメント一覧
+## フレームワーク
+Spring Boot
 
-- [[テーブル設計書]] - データベース設計の詳細
-- [[ルール]] - チーム開発のルールとガイドライン
-- [[キックオフ]] - プロジェクト開始情報
+## 期間
+ 3ヶ月
 
-## 📝 参考資料
+## その他要件
+現在地を取得するAPIを使うこと（Google API）
 
-- [Figma デザイン](https://www.figma.com/file/l8Zzw1wPJBitm0bQMNXTdB/イマココSNS)
-- [GitHub ベースリポジトリ](https://github.com/prum-jp/imakoko-base)
+## 習得してほしいスキル
+外部APIを使った実装N対Nのテーブルを用いた実装リレーションを理解する基礎的なCRUD
+
+## 備考
+- [タスク](作成したプロジェクトのタスクのURL)
+- [テスト仕様書](作成したプロジェクトのテストのURL)
+- [KPT](作成したプロジェクトのKPTのURL)
+- [Figma](https://www.figma.com/file/l8Zzw1wPJBitm0bQMNXTdB/イマココSNS)
+- [DB定義書](作成したDB定義書のURL)

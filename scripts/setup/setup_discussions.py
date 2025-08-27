@@ -195,62 +195,48 @@ def main():
         existing_discussions = get_existing_discussions(github_api, repository_id)
         discussion_titles = [d['title'] for d in existing_discussions]
         
-        # キックオフ議事録の作成
-        kickoff_title = "キックオフ議事録"
-        if kickoff_title not in discussion_titles:
-            print(f"\n📝 Creating '{kickoff_title}' discussion...")
+        # 議事録テンプレートの作成
+        template_title = "議事録テンプレート"
+        if template_title not in discussion_titles:
+            print(f"\n📝 Creating '{template_title}' discussion...")
             
-            kickoff_body = """# キックオフ議事録
+            template_body = """# 議事録
 
-## 開催情報
-- **日時**: 2024年XX月XX日 XX:XX-XX:XX
-- **参加者**: 
-  - [ ] メンバー1
-  - [ ] メンバー2
-  - [ ] メンバー3
-  - [ ] メンバー4
+## 🗓 開催日時
+YYYY/MM/DD HH:MM ～ HH:MM
 
-## アジェンダ
-1. **プロジェクト概要説明** (10分)
-   - イマココSNSの機能要件
-   - 技術スタック確認
+## 👥 参加者
+- [ ] メンバー1
+- [ ] メンバー2
+- [ ] メンバー3
+- [ ] メンター
 
-2. **チーム体制の確認** (10分)
-   - 役割分担の決定
-   - コミュニケーション方法
+## 📋 進捗報告
+- イマココSNS(タスク)のリンクを添付したいです
+- イマココSNS(テスト)のリンクを添付したいです
 
-3. **開発環境セットアップ** (15分)
-   - 各自の環境構築状況確認
-   - 問題があれば解決策検討
+## KPT
+- イマココSNS(KPT)のリンクを添付したいです
 
-4. **スケジュール確認** (10分)
-   - マイルストーンの確認
-   - 今後の開発スケジュール
+## 🔍 メンターレビュー
+- レビューコメント：
+- アドバイス：
+- 次回までの宿題：
 
-## 決定事項
-- [ ] 役割分担の決定
-- [ ] 使用する技術の最終確認
-- [ ] コーディング規約の確認
-- [ ] 開発フローの確認
+## 📅 次回MTG
+- 日時：YYYY/MM/DD HH:MM ～ HH:MM
+- 議題：
 
-## 次回までのアクション
-- [ ] 各自の開発環境セットアップ完了
-- [ ] 担当機能の詳細設計書作成
-- [ ] 次回ミーティング日程調整
-
-## その他・質問事項
-(自由に記載してください)
-
----
-**次回ミーティング予定**: 未定
-**議事録作成者**: 
+## 📝 備考
+- その他連絡事項：
+- 次回までのタスク：
 """
             
-            success = create_discussion(github_api, repository_id, meeting_category_id, kickoff_title, kickoff_body)
+            success = create_discussion(github_api, repository_id, meeting_category_id, template_title, template_body)
             if not success:
-                print("❌ Failed to create kickoff discussion")
+                print("❌ Failed to create template discussion")
         else:
-            print(f"ℹ️ Discussion '{kickoff_title}' already exists")
+            print(f"ℹ️ Discussion '{template_title}' already exists")
         
         print(f"\n✨ Discussions setup completed!")
         print(f"🔗 Access your discussions:")

@@ -154,7 +154,11 @@ def create_wiki_discussions(github_api: GitHubAPI, repository_id: str, category_
         },
         {
             'title': '📝 プロジェクト概要',
-            'content': read_wiki_file('Home.md').replace('# イマココSNS Wiki', '# プロジェクト概要\n\nイマココSNS開発プロジェクトの概要情報です。')
+            'content': read_wiki_file('Home.md')
+        },
+        {
+            'title': '📝 議事録テンプレート',
+            'content': read_wiki_file('議事録テンプレート.md')
         }
     ]
     

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-README内のリンクを動的に更新するスクリプト v5.0 (Refactored)
+README内のリンクを動的に更新するスクリプト
 共通ライブラリを使用してリファクタリング済み
 """
 
@@ -43,8 +43,6 @@ def get_project_urls(github_api: GitHubAPI) -> Dict[str, str]:
                 project_urls['task'] = project['url']
             elif 'KPT' in project['title']:
                 project_urls['kpt'] = project['url']
-            elif 'テスト' in project['title'] or 'test' in project['title'].lower():
-                project_urls['test'] = project['url']
     
     return project_urls
 
@@ -82,41 +80,6 @@ def get_issue_urls(github_api: GitHubAPI) -> Dict[str, str]:
     
     return issue_urls
 
-def get_discussion_urls(github_api: GitHubAPI) -> Dict[str, str]:
-    """DiscussionのURLを取得"""
-    query = """
-    query($owner: String!, $name: String!) {
-        repository(owner: $owner, name: $name) {
-            discussions(first: 20) {
-                nodes {
-                    title
-                    url
-                }
-            }
-        }
-    }
-    """
-    
-    variables = {
-        'owner': github_api.owner,
-        'name': github_api.repo_name
-    }
-    
-    result = github_api.graphql_request(query, variables)
-    discussion_urls = {}
-    
-    if result and 'repository' in result:
-        discussions = result['repository']['discussions']['nodes']
-        for discussion in discussions:
-            if 'プロジェクト概要' in discussion['title']:
-                discussion_urls['project_overview'] = discussion['url']
-            elif 'チーム開発ルール' in discussion['title'] or 'ルール' in discussion['title']:
-                discussion_urls['rules'] = discussion['url']
-            elif 'テーブル設計' in discussion['title'] or 'DB設計' in discussion['title']:
-                discussion_urls['table_design'] = discussion['url']
-    
-    return discussion_urls
-
 def update_readme(github_api: GitHubAPI):
     """READMEファイルを更新"""
     readme_path = 'README.md'
@@ -127,9 +90,6 @@ def update_readme(github_api: GitHubAPI):
     
     print("📋 Getting issue URLs...")
     issue_urls = get_issue_urls(github_api)
-    
-    print("💬 Getting discussion URLs...")
-    discussion_urls = get_discussion_urls(github_api)
     
     # READMEを読み込み
     with open(readme_path, 'r', encoding='utf-8') as f:
@@ -159,17 +119,16 @@ def update_readme(github_api: GitHubAPI):
     with open('readme_links_result.txt', 'w', encoding='utf-8') as f:
         f.write(f"Projects: {len(project_urls)} found\n")
         f.write(f"Issues: {len(issue_urls)} found\n")
-        f.write(f"Discussions: {len(discussion_urls)} found\n")
-        for key, url in {**project_urls, **issue_urls, **discussion_urls}.items():
+        for key, url in {**project_urls, **issue_urls}.items():
             f.write(f"{key}: {url}\n")
 
 def main():
     """メイン処理"""
     print("=" * 60)
-    print("🔗 README LINKS UPDATE v5.0 (Refactored)")
+    print("🔗 README LINKS UPDATE")
     print("=" * 60)
     print(f"⏰ Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"🔧 Script: update_readme_links.py v5.0 (Refactored)")
+    print(f"🔧 Script: update_readme_links.py")
     print("=" * 60)
     
     try:

@@ -6,7 +6,6 @@ on:
 permissions:
   contents: write
   issues: write
-  discussions: write
   pages: write
   id-token: write
 
@@ -18,10 +17,10 @@ jobs:
     - name: 🔍 Environment Diagnostics
       run: |
         echo "=========================================================="
-        echo "🚀 TEAM SETUP WORKFLOW STARTING v5.0 (REFACTORED)"
+        echo "🚀 TEAM SETUP WORKFLOW STARTING"
         echo "=========================================================="
         echo "⏰ Timestamp: $(date)"
-        echo "🔧 Workflow: team-setup.yml v5.0 (Simplified)"
+        echo "🔧 Workflow: team-setup.yml"
         echo "📂 Working Directory: $(pwd)"
         echo "👤 Actor: ${{ github.actor }}"
         echo "📦 Repository: ${{ github.repository }}"
@@ -52,7 +51,7 @@ jobs:
     # ===============================
     # Step 1: Create GitHub Projects
     # ===============================
-    - name: 📊 Create GitHub Projects V2
+    - name: 📊 Create GitHub Projects
       env:
         TEAM_SETUP_TOKEN: ${{ secrets.TEAM_SETUP_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
@@ -111,12 +110,12 @@ jobs:
         echo "🎉                                        🎉"
         echo "🎉    チーム開発環境セットアップ完了！    🎉"
         echo "🎉    Team Development Setup Complete!    🎉"
-        echo "🎉         (v5.0 REFACTORED)             🎉"
+        echo "🎉                                        🎉"
         echo "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉"
         echo ""
-        echo "🆕 REFACTORED ARCHITECTURE COMPLETE"
+        echo "🆕 SETUP COMPLETE"
         echo "✅ Successfully Created:"
-        echo "• 📊 2 GitHub Projects V2 (with custom fields)"
+        echo "• 📊 2 GitHub Projects (with custom fields)"
         echo "• 📋 Task Issues (integrated smart processing)"
         echo "• 🎯 KPT Issues (consolidated workflow)"
         echo "• 🔗 All issues automatically linked to projects"
@@ -125,7 +124,6 @@ jobs:
         echo "🔗 Access your resources:"
         echo "• Projects: https://github.com/${{ github.repository }}/projects"
         echo "• Issues: https://github.com/${{ github.repository }}/issues"
-        echo "• Discussions: https://github.com/${{ github.repository }}/discussions"
         echo ""
         echo "🚀 Architecture Improvements:"
         echo "• 90% code duplication eliminated"

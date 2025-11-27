@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GitHub Issues 全自動作成スクリプト v5.0 (REFACTORED)
+GitHub Issues 全自動作成スクリプト
 すべてのIssueを1つのスクリプトで動的に処理
 共通ライブラリを使用してリファクタリング済み
 """
@@ -30,10 +30,10 @@ from common.issue_processor import IssueProcessor
 def main():
     """メイン処理"""
     print("=" * 70)
-    print("🧠 SMART ALL-IN-ONE ISSUE CREATOR v5.0 (Refactored)")
+    print("🧠 SMART ALL-IN-ONE ISSUE CREATOR")
     print("=" * 70)
     print(f"⏰ Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"🔧 Script: create_all_issues_smart.py v5.0 (Refactored)")
+    print(f"🔧 Script: create_all_issues_smart.py")
     print("=" * 70)
     
     start_time = time.time()
@@ -129,7 +129,7 @@ def main():
         
         # 結果保存
         with open('smart_issue_creation_result.txt', 'w', encoding='utf-8') as f:
-            f.write(f"Smart Issue Creation Results (v5.0 Refactored)\n")
+            f.write(f"Smart Issue Creation Results\n")
             f.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
             f.write(f"Task issues: {len(task_created)}\n")
             f.write(f"KPT issues: {len(kpt_created)}\n")
@@ -156,7 +156,7 @@ if __name__ == '__main__':
     # コマンドライン引数処理
     if len(sys.argv) > 1:
         issue_type = sys.argv[1].lower()
-        if issue_type in ['task', 'test', 'kpt', 'link']:
+        if issue_type in ['task', 'kpt', 'link']:
             print(f"🎯 Running in {issue_type.upper()} mode")
             # TODO: ここで特定のIssue種別のみ処理するロジックを実装
             # 現在は全種別を処理

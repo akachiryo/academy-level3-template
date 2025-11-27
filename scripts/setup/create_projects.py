@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GitHub Projects V2作成スクリプト (Refactored)
+GitHub Projects作成スクリプト
 3つの独立したプロジェクトを作成する
 共通ライブラリを使用してリファクタリング済み
 """
@@ -197,10 +197,10 @@ def create_project(github_api: GitHubAPI, title: str) -> Optional[str]:
 def main():
     """メイン処理"""
     print("=" * 60)
-    print("📊 GITHUB PROJECTS CREATION v5.0 (Refactored)")
+    print("📊 GITHUB PROJECTS CREATION")
     print("=" * 60)
     print(f"⏰ Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"🔧 Script: create_projects.py v5.0 (Refactored)")
+    print(f"🔧 Script: create_projects.py")
     print("=" * 60)
     
     try:

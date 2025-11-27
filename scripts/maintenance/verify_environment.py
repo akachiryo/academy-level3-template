@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Environment Verification Script v3.0
+Environment Verification Script
 Checks all environment variables, files, and data integrity before setup
 """
 
@@ -53,8 +53,7 @@ def check_csv_files():
     
     csv_files = {
         'data/imakoko_sns_tables.csv': 'Database table design',
-        'data/tasks_for_issues.csv': 'Task issues',
-        'data/tests_for_issues.csv': 'Test issues'
+        'data/tasks_for_issues.csv': 'Task issues'
     }
     
     all_files_ok = True
@@ -173,18 +172,9 @@ def estimate_processing_requirements():
                 task_rows = [row for row in reader if row.get('title', '').strip()]
                 task_count = len(task_rows)
         
-        # テストIssues数を確認
-        test_count = 0
-        if os.path.exists('data/tests_for_issues.csv'):
-            with open('data/tests_for_issues.csv', 'r', encoding='utf-8') as f:
-                reader = csv.DictReader(f)
-                test_rows = [row for row in reader if row.get('title', '').strip()]
-                test_count = len(test_rows)
-        
-        total_issues = task_count + test_count
+        total_issues = task_count
         
         print(f"  📝 Task issues to create: {task_count}")
-        print(f"  🧪 Test issues to create: {test_count}")
         print(f"  📊 Total issues to create: {total_issues}")
         
         # バッチ数を計算
@@ -213,11 +203,11 @@ def estimate_processing_requirements():
 def main():
     """メイン処理"""
     print("=" * 60)
-    print("🔍 ENVIRONMENT VERIFICATION v3.0")
+    print("🔍 ENVIRONMENT VERIFICATION")
     print("=" * 60)
     print(f"⏰ Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"📂 Working directory: {os.getcwd()}")
-    print(f"🔧 Script: verify_environment.py v3.0")
+    print(f"🔧 Script: verify_environment.py")
     print("=" * 60)
     
     # All verification checks

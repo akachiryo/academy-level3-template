@@ -70,10 +70,9 @@ class IssueProcessor:
         
         return issue_requests
     
-    def classify_created_issues(self, created_issues: List[Dict]) -> Tuple[List[Dict], List[Dict], List[Dict]]:
+    def classify_created_issues(self, created_issues: List[Dict]) -> Tuple[List[Dict], List[Dict]]:
         """作成されたIssueをタイプ別に分類"""
         task_created = []
-        test_created = []
         kpt_created = []
         
         for issue in created_issues:
@@ -82,26 +81,21 @@ class IssueProcessor:
                 task_created.append(issue)
             elif 'kpt' in issue_labels:
                 kpt_created.append(issue)
-            else:  # デフォルトはtest
-                test_created.append(issue)
         
-        return task_created, test_created, kpt_created
+        return task_created, kpt_created
     
     def prepare_all_issue_data(self, task_data: List[Dict], 
-                              test_data: List[Dict], 
                               kpt_data: List[Dict]) -> List[Tuple[Dict, str]]:
         """全Issue種別のデータを準備"""
         all_requests = []
         
         # 各Issue種別のデータを準備
         task_requests = self.prepare_issue_data(task_data, 'task')
-        test_requests = self.prepare_issue_data(test_data, 'test')
         kpt_requests = self.prepare_issue_data(kpt_data, 'kpt')
         
-        all_requests = task_requests + test_requests + kpt_requests
+        all_requests = task_requests + kpt_requests
         print(f"📋 Prepared requests: {len(all_requests)} issues total")
         print(f"  • Task: {len(task_requests)} issues")
-        print(f"  • Test: {len(test_requests)} issues")
         print(f"  • KPT: {len(kpt_requests)} issues")
         
         return all_requests

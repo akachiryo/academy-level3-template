@@ -31,26 +31,24 @@ class CSVLoader:
         return issues
     
     @staticmethod
-    def load_all_csv_data(data_dir: str = 'data') -> Tuple[List[Dict], List[Dict], List[Dict]]:
+    def load_all_csv_data(data_dir: str = 'data') -> Tuple[List[Dict], List[Dict]]:
         """全てのCSVデータを読み込み"""
         print("📊 Loading all CSV data...")
         
         # CSV ファイルマッピング
         csv_files = {
             'task': os.path.join(data_dir, 'tasks_for_issues.csv'),
-            'test': os.path.join(data_dir, 'tests_for_issues.csv'),
             'kpt': os.path.join(data_dir, 'kpt_for_issues.csv')
         }
         
         # 各CSVを読み込み
         task_issues = CSVLoader.load_issue_data(csv_files['task'], 'task')
-        test_issues = CSVLoader.load_issue_data(csv_files['test'], 'test')
         kpt_issues = CSVLoader.load_issue_data(csv_files['kpt'], 'kpt')
         
-        total = len(task_issues) + len(test_issues) + len(kpt_issues)
+        total = len(task_issues) + len(kpt_issues)
         print(f"📊 Total: {total} issues to create")
         
-        return task_issues, test_issues, kpt_issues
+        return task_issues, kpt_issues
     
     @staticmethod
     def validate_csv_data(issues: List[Dict], issue_type: str) -> List[Dict]:

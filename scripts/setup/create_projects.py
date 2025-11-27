@@ -152,16 +152,6 @@ def setup_project_fields(github_api: GitHubAPI, project_id: str, project_title: 
                 created_fields["Sprint"] = field_id
         else:
             print(f"  ℹ️ Field already exists: Sprint")
-        
-    
-    elif "テスト" in project_title:
-        # テストプロジェクト: Sprintのみ
-        if "Sprint" not in existing_fields:
-            field_id = create_custom_field(github_api, project_id, "Sprint", sprint_options)
-            if field_id:
-                created_fields["Sprint"] = field_id
-        else:
-            print(f"  ℹ️ Field already exists: Sprint")
     
     # KPTプロジェクトには追加フィールドなし
     
@@ -235,7 +225,6 @@ def main():
         # 3つのプロジェクトを作成
         projects = [
             "イマココSNS（タスク）",
-            "イマココSNS（テスト）", 
             "イマココSNS（KPT）"
         ]
         

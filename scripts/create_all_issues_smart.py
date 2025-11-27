@@ -54,8 +54,8 @@ def main():
         
         # CSV読み込み
         csv_loader = CSVLoader()
-        task_data, test_data, kpt_data = csv_loader.load_all_csv_data()
-        total_issues = len(task_data) + len(test_data) + len(kpt_data)
+        task_data, kpt_data = csv_loader.load_all_csv_data()
+        total_issues = len(task_data) + len(kpt_data)
         
         if total_issues == 0:
             print("⚠️ No issues found in CSV files")
@@ -84,7 +84,7 @@ def main():
         project_ids = config.load_project_ids()
         
         # Issue作成用データ準備
-        all_requests = issue_processor.prepare_all_issue_data(task_data, test_data, kpt_data)
+        all_requests = issue_processor.prepare_all_issue_data(task_data, kpt_data)
         
         # バッチ処理実行
         all_created_issues, all_failed_issues = batch_processor.process_all_batches(all_requests, start_time)
@@ -96,11 +96,11 @@ def main():
             all_created_issues.extend(retry_created)
         
         # 作成されたIssueを種別ごとに分類
-        task_created, test_created, kpt_created = issue_processor.classify_created_issues(all_created_issues)
+        task_created, kpt_created = issue_processor.classify_created_issues(all_created_issues)
         
         # プロジェクトリンク
-        task_linked, test_linked, kpt_linked = batch_processor.link_issues_to_projects(
-            task_created, test_created, kpt_created, project_ids
+        task_linked, kpt_linked = batch_processor.link_issues_to_projects(
+            task_created, kpt_created, project_ids
         )
         
         # 結果サマリー
@@ -112,13 +112,11 @@ def main():
         print("=" * 60)
         print(f"📊 Results:")
         print(f"  • Task issues created: {len(task_created)}")
-        print(f"  • Test issues created: {len(test_created)}")
         print(f"  • KPT issues created: {len(kpt_created)}")
         print(f"  • Total issues created: {len(all_created_issues)}")
         if retry_created:
             print(f"  • Retry issues created: {len(retry_created)}")
         print(f"  • Task issues linked: {task_linked}")
-        print(f"  • Test issues linked: {test_linked}")
         print(f"  • KPT issues linked: {kpt_linked}")
         final_failed = len(all_failed_issues) - len(retry_created)
         if final_failed > 0:
@@ -134,7 +132,6 @@ def main():
             f.write(f"Smart Issue Creation Results (v5.0 Refactored)\n")
             f.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
             f.write(f"Task issues: {len(task_created)}\n")
-            f.write(f"Test issues: {len(test_created)}\n")
             f.write(f"KPT issues: {len(kpt_created)}\n")
             f.write(f"Total: {len(all_created_issues)}\n")
             if retry_created:

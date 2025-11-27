@@ -145,9 +145,8 @@ class BatchProcessor:
         return retry_created
     
     def link_issues_to_projects(self, task_issues: List[Dict], 
-                               test_issues: List[Dict], 
                                kpt_issues: List[Dict], 
-                               project_ids: Dict[str, str]) -> Tuple[int, int, int]:
+                               project_ids: Dict[str, str]) -> Tuple[int, int]:
         """IssueをProjectsにリンク"""
         print("\n🔗 Linking issues to projects...")
         
@@ -181,13 +180,6 @@ class BatchProcessor:
             'task'
         )
         
-        test_linked = link_batch(
-            test_issues,
-            project_ids.get('イマココSNS（テスト）'),
-            'イマココSNS（テスト）',
-            'test'
-        )
-        
         kpt_linked = link_batch(
             kpt_issues,
             project_ids.get('イマココSNS（KPT）'),
@@ -195,4 +187,4 @@ class BatchProcessor:
             'kpt'
         )
         
-        return task_linked, test_linked, kpt_linked
+        return task_linked, kpt_linked

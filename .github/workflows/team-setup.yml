@@ -57,7 +57,7 @@ jobs:
         TEAM_SETUP_TOKEN: ${{ secrets.TEAM_SETUP_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
-        echo "📊 Step 1: Creating 3 GitHub Projects..."
+        echo "📊 Step 1: Creating 2 GitHub Projects..."
         python scripts/setup/create_projects.py
         echo "✅ Projects created successfully"
         echo "📝 Checking project_ids.txt..."
@@ -69,30 +69,6 @@ jobs:
         fi
         
     # ===============================
-    # Step 2: Setup Discussions
-    # ===============================
-    - name: 💬 Setup GitHub Discussions
-      env:
-        TEAM_SETUP_TOKEN: ${{ secrets.TEAM_SETUP_TOKEN }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
-      run: |
-        echo "💬 Step 2: Setting up Discussions..."
-        python scripts/setup/setup_discussions.py
-        echo "✅ Meeting minutes template created"
-        
-    # ===============================
-    # Step 3: Create Wiki Discussions
-    # ===============================
-    - name: 📚 Create Wiki Content as Discussions
-      env:
-        TEAM_SETUP_TOKEN: ${{ secrets.TEAM_SETUP_TOKEN }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
-      run: |
-        echo "📚 Step 3: Creating Wiki content as Discussions..."
-        python scripts/setup/create_wiki_discussions.py
-        echo "✅ Wiki content migration to Discussions complete"
-        
-    # ===============================
     # Step 4: Create All Issues
     # ===============================
     - name: 📋🧪🎯 Create All Issues & Link to Projects
@@ -101,7 +77,7 @@ jobs:
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: |
         echo "📋 Creating All Issues and Linking to Projects..."
-        echo "🎯 Processing Task, Test, and KPT issues with optimized rate limiting"
+        echo "🎯 Processing Task and KPT issues..."
         python scripts/create_all_issues_smart.py
         echo "✅ All issues created and linked successfully!"
         
@@ -140,13 +116,10 @@ jobs:
         echo ""
         echo "🆕 REFACTORED ARCHITECTURE COMPLETE"
         echo "✅ Successfully Created:"
-        echo "• 📊 3 GitHub Projects V2 (with custom fields)"
+        echo "• 📊 2 GitHub Projects V2 (with custom fields)"
         echo "• 📋 Task Issues (integrated smart processing)"
-        echo "• 🧪 Test Issues (optimized rate limiting)"
         echo "• 🎯 KPT Issues (consolidated workflow)"
         echo "• 🔗 All issues automatically linked to projects"
-        echo "• 📚 Wiki content as Discussions (private repo compatible)"
-        echo "• 💬 Discussion templates and categories"
         echo "• 📝 Dynamic README links"
         echo ""
         echo "🔗 Access your resources:"
@@ -162,7 +135,4 @@ jobs:
         echo "• Optimized directory structure"
         echo ""
         echo "🎯 Features:"
-        echo "• Wiki content migrated to Discussions"
-        echo "• Table design auto-generated from Excel/CSV"
-        echo "• All documentation accessible in Discussions"
         echo "• Enhanced Sprint management (3-month planning)"

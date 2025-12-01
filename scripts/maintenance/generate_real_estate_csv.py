@@ -1,18 +1,33 @@
-title,body,labels,assignee,milestone,priority
-環境構築,"## 概要
+
+import csv
+import re
+
+raw_text = """
+# 1: 環境構築
+## 概要
 * メンバー内の誰かの個人のリポジトリにプロジェクトを作成する（private）
 * メンバー全員、担当メンターを招待する
 * それぞれ環境構築を実施する
 * ローカルでRailsの画面が表示されたらOK
 
 ## 完了条件
-* [ ] メンバー全員が上記の環境構築を完了する","task,Required",,,medium
-ルーティング定義,"## 概要
+* [ ] メンバー全員が上記の環境構築を完了する
+
+## task
+Required
+
+# 2: ルーティング定義
+## 概要
 * 各チームのGoogleドライブにある「ルーティング定義書」にルーティングを定義する
 
 ## 完了条件
-* [ ] チーム内レビュー完了","task,Required",,,medium
-Agent_ヘッダー,"## 要件
+* [ ] チーム内レビュー完了
+
+## task
+Required
+
+# 3: Agent_ヘッダー
+## 要件
 [Figma未ログイン](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88-(%E3%82%B3%E3%83%94%E3%83%BC)?type=design&node-id=142-11596&mode=design&t=1yVj1jf1KaeGVoYl-0)
 [Figmaログイン済](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88-(%E3%82%B3%E3%83%94%E3%83%BC)?type=design&node-id=149-13053&mode=design&t=1yVj1jf1KaeGVoYl-0)
 
@@ -24,16 +39,26 @@ Agent_ヘッダー,"## 要件
 ## 完了条件
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-Agent_フッター,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 4: Agent_フッター
+## 要件
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88-(%E3%82%B3%E3%83%94%E3%83%BC)?type=design&node-id=142-11616&mode=design&t=1yVj1jf1KaeGVoYl-0)
 * 状況によっての変化はなし
 
 ## 完了条件
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-Agent_物件一覧,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 5: Agent_物件一覧
+## 要件
 Figma
 * https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11592&mode=design&t=0TZfPdAIwIZt2HFD-0
 
@@ -46,8 +71,13 @@ Figma
 ## 完了条件
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-Agent_物件新規登録,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 6: Agent_物件新規登録
+## 要件
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11476&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
 - [物件一覧の「物件の登録」ボタン](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11592&mode=design&t=0TZfPdAIwIZt2HFD-0)押下で遷移する
@@ -79,8 +109,13 @@ Agent_物件新規登録,"## 要件
 ## 完了条件
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-User_ログイン,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 7: User_ログイン
+## 要件
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11235&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
 - Auth0を用いて認証を実装すること
@@ -92,8 +127,13 @@ User_ログイン,"## 要件
 ## 完了条件
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-User_ログアウト,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 8: User_ログアウト
+## 要件
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11095&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
 - Auth0を用いて認証を実装すること
@@ -102,8 +142,13 @@ User_ログアウト,"## 要件
 ## 完了条件
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-User_物件一覧:front,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 9: User_物件一覧:front
+## 要件
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11119&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
 - DBに存在する物件がupdated_atの降順で表示される
@@ -113,8 +158,13 @@ User_物件一覧:front,"## 要件
 ## 完了条件
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-User_物件検索,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 10: User_物件検索
+## 要件
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11119&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
 - 全ての項目はAND検索とする
@@ -154,8 +204,13 @@ User_物件検索,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-User_物件ソート,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 11: User_物件ソート
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11119&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -171,8 +226,13 @@ User_物件ソート,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-User_物件詳細,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 12: User_物件詳細
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-10982&mode=design&t=0TZfPdAIwIZt2HFD-0)
 [画像最大枚数](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=242-10473&mode=design&t=0TZfPdAIwIZt2HFD-0)
@@ -195,8 +255,13 @@ User_物件詳細,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-User_お気に入り一覧,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 13: User_お気に入り一覧
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-10960&mode=design&t=zRuBrp5zhjJzAT1r-0)
 
@@ -213,8 +278,13 @@ User_お気に入り一覧,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-Gest_物件一覧,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 14: Gest_物件一覧
+## 要件
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11140&mode=design&t=zRuBrp5zhjJzAT1r-0)
 
 - ログイン状態との違い
@@ -225,8 +295,13 @@ Gest_物件一覧,"## 要件
 ## 完了条件
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-Agent_ログイン,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 15: Agent_ログイン
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11596&mode=design&t=egp1LRgeUidwhaW6-0)
 
@@ -242,8 +317,13 @@ Agent_ログイン,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-Agent_ログアウト,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 16: Agent_ログアウト
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=149-13053&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -256,8 +336,13 @@ Agent_ログアウト,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-Agent_物件編集,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 17: Agent_物件編集
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11377&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -271,8 +356,13 @@ Agent_物件編集,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-Agent_物件削除,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 18: Agent_物件削除
+## 要件
 
 - [物件一覧のゴミ箱マーク](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11592&mode=design&t=0TZfPdAIwIZt2HFD-0)をクリックすると、[確認モーダル](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=149-13539&mode=design&t=0TZfPdAIwIZt2HFD-0)が表示される
 - 「キャンセル」ボタンをクリックするとモーダルが消える
@@ -284,8 +374,13 @@ Agent_物件削除,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-User_ヘッダー,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 19: User_ヘッダー
+## 要件
 
 [未ログイン(ゲスト)](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11140&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -301,8 +396,14 @@ User_ヘッダー,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-User_フッター,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 20: User_フッター
+
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11140&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -313,8 +414,13 @@ User_フッター,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-User_新規登録,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 21: User_新規登録
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11198&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -339,8 +445,13 @@ User_新規登録,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-User_お気に入り追加,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 22: User_お気に入り追加
+## 要件
 
 [物件一覧](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11119&mode=design&t=zRuBrp5zhjJzAT1r-0)
 [物件詳細](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-10982&mode=design&t=zRuBrp5zhjJzAT1r-0)
@@ -354,8 +465,14 @@ User_お気に入り追加,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-User_お気に入り解除,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 23: User_お気に入り解除
+
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-10960&mode=design&t=zRuBrp5zhjJzAT1r-0)
 
@@ -368,8 +485,13 @@ User_お気に入り解除,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-migration・seed作成,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 24: migration・seed作成
+## 要件
 
 * migrationファイル・seedファイルともに作成済みではあるが、変更が必要であれば適宜対応すること
 
@@ -430,8 +552,13 @@ migration・seed作成,"## 要件
 * [ ] migrationファイル作成
 * [ ] seedファイル作成
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-Agent_パスワード再発行,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 25: Agent_パスワード再発行
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=426-11382&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -449,8 +576,13 @@ Agent_パスワード再発行,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Challenge",,,medium
-Agent_パスワード変更,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Challenge
+
+# 26: Agent_パスワード変更
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=426-11398&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -471,8 +603,13 @@ Agent_パスワード変更,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Challenge",,,medium
-Agent_物件検索,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Challenge
+
+# 27: Agent_物件検索
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11592&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -486,8 +623,13 @@ Agent_物件検索,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Optional",,,medium
-Agent_物件一覧ソート,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Optional
+
+# 28: Agent_物件一覧ソート
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=559-10625&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -499,8 +641,13 @@ Agent_物件一覧ソート,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Optional",,,medium
-Agent_ユーザー情報編集,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Optional
+
+# 29: Agent_ユーザー情報編集
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11307&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -520,8 +667,13 @@ Agent_ユーザー情報編集,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Optional",,,medium
-Agent_お問い合わせ一覧,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Optional
+
+# 30: Agent_お問い合わせ一覧
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11255&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -538,8 +690,13 @@ Agent_お問い合わせ一覧,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-Agent_お問い合わせ検索,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 31: Agent_お問い合わせ検索
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11255&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -551,8 +708,13 @@ Agent_お問い合わせ検索,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Optional",,,medium
-Agent_お問い合わせステータス変更,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Optional
+
+# 32: Agent_お問い合わせステータス変更
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-11255&mode=design&t=ME5lOBVQu9ahF2AU-0)
 
@@ -563,8 +725,13 @@ Agent_お問い合わせステータス変更,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Optional",,,medium
-User_パスワード再設定,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Optional
+
+# 33: User_パスワード再設定
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=419-10350&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -582,8 +749,13 @@ User_パスワード再設定,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Challenge",,,medium
-User_パスワード変更,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Challenge
+
+# 34: User_パスワード変更
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=419-10374&mode=design&t=0TZfPdAIwIZt2HFD-0)
 
@@ -604,8 +776,13 @@ User_パスワード変更,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Challenge",,,medium
-User_お気に入りソート,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Challenge
+
+# 35: User_お気に入りソート
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-10960&mode=design&t=zRuBrp5zhjJzAT1r-0)
 
@@ -622,8 +799,13 @@ User_お気に入りソート,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Optional",,,medium
-User_お気に入り検索,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Optional
+
+# 36: User_お気に入り検索
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=142-10960&mode=design&t=zRuBrp5zhjJzAT1r-0)
 
@@ -664,8 +846,13 @@ User_お気に入り検索,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Optional",,,medium
-User_お問い合わせ作成,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Optional
+
+# 37: User_お問い合わせ作成
+## 要件
 
 ### お問い合わせ入力
 
@@ -702,8 +889,13 @@ User_お問い合わせ作成,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Required",,,medium
-User_マイページ,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Required
+
+# 38: User_マイページ
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=546-11378&mode=design&t=zRuBrp5zhjJzAT1r-0)
 
@@ -718,8 +910,13 @@ User_マイページ,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Optional",,,medium
-User_アカウント削除,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Optional
+
+# 39: User_アカウント削除
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=546-11378&mode=design&t=zRuBrp5zhjJzAT1r-0)
 
@@ -736,8 +933,13 @@ User_アカウント削除,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Optional",,,medium
-Gest_お問合せ作成,"## 要件
+* [ ] developブランチにマージ
+
+## task
+Optional
+
+# 40: Gest_お問合せ作成
+## 要件
 
 [Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88?type=design&node-id=420-10398&mode=design&t=zRuBrp5zhjJzAT1r-0)
 
@@ -749,8 +951,13 @@ Gest_お問合せ作成,"## 要件
 
 * [ ] 要件を満たして実装完了
 * [ ] チーム内レビュー完了
-* [ ] developブランチにマージ","task,Optional",,,medium
-成果発表会準備,"# 概要
+* [ ] developブランチにマージ
+
+## task
+Optional
+
+# 41: 成果発表会準備
+# 概要
 ## 成果発表会とは
 作成した不動産検索サイトと、チーム開発で学んだことをPRUMの社員に発表する会を開催する。
 [6th_不動産検索サイト成果発表会](https://drive.google.com/drive/folders/1Y5x4VwKA6vYp_LiJW1flrrGVTkKfRc3C)
@@ -778,4 +985,65 @@ Gest_お問合せ作成,"## 要件
 
 # 完了条件
 
-* 成果発表会を開催する。","task,Required",,,medium
+* 成果発表会を開催する。
+
+## task
+Required
+"""
+
+def parse_tasks(text):
+    tasks = []
+    # Split by "# N: " pattern
+    # Using regex to find start of each task
+    pattern = re.compile(r'^# (\d+): (.+)$', re.MULTILINE)
+    
+    matches = list(pattern.finditer(text))
+    
+    for i, match in enumerate(matches):
+        task_num = match.group(1)
+        title = match.group(2).strip()
+        
+        start_pos = match.end()
+        if i < len(matches) - 1:
+            end_pos = matches[i+1].start()
+        else:
+            end_pos = len(text)
+            
+        body_content = text[start_pos:end_pos].strip()
+        
+        # Extract labels from body
+        # Look for "## task" and the following line
+        label_pattern = re.compile(r'## task\s*\n(.+)', re.MULTILINE)
+        label_match = label_pattern.search(body_content)
+        
+        labels = "task"
+        if label_match:
+            priority = label_match.group(1).strip()
+            labels = f"task,{priority}"
+            # Remove the label section from body
+            body_content = label_pattern.sub('', body_content).strip()
+        
+        # Clean up body (remove trailing newlines)
+        body_content = body_content.strip()
+        
+        tasks.append({
+            'title': title,
+            'body': body_content,
+            'labels': labels,
+            'assignee': '',
+            'milestone': '',
+            'priority': 'medium'
+        })
+        
+    return tasks
+
+def write_csv(tasks, filename):
+    with open(filename, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=['title', 'body', 'labels', 'assignee', 'milestone', 'priority'])
+        writer.writeheader()
+        writer.writerows(tasks)
+    print(f"Successfully wrote {len(tasks)} tasks to {filename}")
+
+if __name__ == "__main__":
+    tasks = parse_tasks(raw_text)
+    write_csv(tasks, '/Users/ryo.akachi/ai/acacemy-level3-template/data/tasks_for_real_estate.csv')

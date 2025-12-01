@@ -100,7 +100,7 @@ def main():
         
         # プロジェクトリンク
         task_linked, kpt_linked = batch_processor.link_issues_to_projects(
-            task_created, kpt_created, project_ids
+            task_created, kpt_created, project_ids, issue_type_config
         )
         
         # 結果サマリー

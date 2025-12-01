@@ -146,12 +146,15 @@ class BatchProcessor:
     
     def link_issues_to_projects(self, task_issues: List[Dict], 
                                kpt_issues: List[Dict], 
-                               project_ids: Dict[str, str]) -> Tuple[int, int]:
+                               project_ids: Dict[str, str],
+                               issue_type_config: Any) -> Tuple[int, int]:
         """IssueをProjectsにリンク"""
         print("\n🔗 Linking issues to projects...")
         
         def link_batch(issues: List[Dict], project_id: str, project_name: str, issue_type: str):
             if not issues or not project_id:
+                if issues and not project_id:
+                    print(f"  ⚠️ Project ID not found for {project_name}. Skipping link.")
                 return 0
             
             print(f"  📌 Linking {len(issues)} {issue_type} issues to {project_name}")
@@ -172,18 +175,22 @@ class BatchProcessor:
             print(f"  📊 {project_name}: {success_count}/{len(issues)} issues linked")
             return success_count
         
+        # プロジェクト名を取得
+        task_project_name = issue_type_config.get_project_name('task')
+        kpt_project_name = issue_type_config.get_project_name('kpt')
+        
         # プロジェクトにリンク
         task_linked = link_batch(
             task_issues, 
-            project_ids.get('イマココSNS（タスク）'), 
-            'イマココSNS（タスク）',
+            project_ids.get(task_project_name), 
+            task_project_name,
             'task'
         )
         
         kpt_linked = link_batch(
             kpt_issues,
-            project_ids.get('イマココSNS（KPT）'),
-            'イマココSNS（KPT）',
+            project_ids.get(kpt_project_name),
+            kpt_project_name,
             'kpt'
         )
         

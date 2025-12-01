@@ -105,21 +105,52 @@ class IssueTypeConfig:
         
         if config_file and os.path.exists(config_file):
             self.load_issue_types(config_file)
+            
+        # 環境変数に基づいてプロジェクト名を強制的に適用
+        self._apply_project_names()
     
+    def _apply_project_names(self):
+        """環境変数に基づいてプロジェクト名を適用"""
+        project_type = os.environ.get('PROJECT_TYPE', 'imakoko')
+        
+        if project_type == 'real_estate':
+            task_project = '不動産検索サイト（タスク）'
+            kpt_project = '不動産検索サイト（KPT）'
+            task_csv = 'data/tasks_for_real_estate.csv'
+        else:
+            task_project = 'イマココSNS（タスク）'
+            kpt_project = 'イマココSNS（KPT）'
+            task_csv = 'data/tasks_for_issues.csv'
+            
+        if 'task' in self.issue_types:
+            self.issue_types['task']['project_name'] = task_project
+            self.issue_types['task']['csv_file'] = task_csv
+        if 'kpt' in self.issue_types:
+            self.issue_types['kpt']['project_name'] = kpt_project
+
     def _load_default_issue_types(self) -> Dict[str, Dict[str, Any]]:
         """デフォルトのIssue種別設定"""
+        project_type = os.environ.get('PROJECT_TYPE', 'imakoko')
+        
+        if project_type == 'real_estate':
+            task_project = '不動産検索サイト（タスク）'
+            kpt_project = '不動産検索サイト（KPT）'
+        else:
+            task_project = 'イマココSNS（タスク）'
+            kpt_project = 'イマココSNS（KPT）'
+            
         return {
             'task': {
                 'csv_file': 'data/tasks_for_issues.csv',
                 'title_prefix': 'タスク',
                 'labels': ['task'],
-                'project_name': 'イマココSNS（タスク）'
+                'project_name': task_project
             },
             'kpt': {
                 'csv_file': 'data/kpt_for_issues.csv',
                 'title_prefix': '',  # KPTは番号付けしない
                 'labels': ['kpt'],
-                'project_name': 'イマココSNS（KPT）'
+                'project_name': kpt_project
             }
         }
     

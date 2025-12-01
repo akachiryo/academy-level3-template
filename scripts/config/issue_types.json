@@ -2,23 +2,19 @@
   "task": {
     "csv_file": "data/tasks_for_issues.csv",
     "title_prefix": "タスク",
-    "labels": ["task"],
+    "labels": [
+      "task"
+    ],
     "project_name": "イマココSNS（タスク）",
     "numbered_title": true,
     "description": "タスク管理用のIssue"
   },
-  "test": {
-    "csv_file": "data/tests_for_issues.csv",
-    "title_prefix": "テスト",
-    "labels": ["test"],
-    "project_name": "イマココSNS（テスト）",
-    "numbered_title": true,
-    "description": "テスト項目管理用のIssue"
-  },
   "kpt": {
     "csv_file": "data/kpt_for_issues.csv",
     "title_prefix": "",
-    "labels": ["kpt"],
+    "labels": [
+      "kpt"
+    ],
     "project_name": "イマココSNS（KPT）",
     "numbered_title": false,
     "description": "KPT（Keep/Problem/Try）振り返り用のIssue"

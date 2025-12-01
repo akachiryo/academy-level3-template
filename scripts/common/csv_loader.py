@@ -35,15 +35,25 @@ class CSVLoader:
         """全てのCSVデータを読み込み"""
         print("📊 Loading all CSV data...")
         
-        # CSV ファイルマッピング
-        csv_files = {
-            'task': os.path.join(data_dir, 'tasks_for_issues.csv'),
-            'kpt': os.path.join(data_dir, 'kpt_for_issues.csv')
-        }
+        # プロジェクトタイプを環境変数から取得
+        project_type = os.environ.get('PROJECT_TYPE', 'imakoko')
+        print(f"📦 Project Type: {project_type}")
         
-        # 各CSVを読み込み
-        task_issues = CSVLoader.load_issue_data(csv_files['task'], 'task')
-        kpt_issues = CSVLoader.load_issue_data(csv_files['kpt'], 'kpt')
+        # プロジェクトタイプに応じてCSVファイルを選択
+        if project_type == 'real_estate':
+            task_csv = 'tasks_for_real_estate.csv'
+            # 不動産検索サイトではKPTを生成しない
+            kpt_issues = []
+            print("ℹ️ KPT issues are disabled for real_estate project type")
+        else:  # imakoko or default
+            task_csv = 'tasks_for_issues.csv'
+            # CSV ファイルマッピング
+            kpt_csv = os.path.join(data_dir, 'kpt_for_issues.csv')
+            kpt_issues = CSVLoader.load_issue_data(kpt_csv, 'kpt')
+        
+        # タスクCSVを読み込み
+        task_csv_path = os.path.join(data_dir, task_csv)
+        task_issues = CSVLoader.load_issue_data(task_csv_path, 'task')
         
         total = len(task_issues) + len(kpt_issues)
         print(f"📊 Total: {total} issues to create")

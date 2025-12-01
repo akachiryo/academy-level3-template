@@ -1,0 +1,129 @@
+name: 🏠 不動産検索サイト Setup
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pages: write
+  id-token: write
+
+jobs:
+  setup-real-estate-environment:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 🔍 Environment Diagnostics
+      run: |
+        echo "=========================================================="
+        echo "🚀 不動産検索サイト SETUP WORKFLOW STARTING"
+        echo "=========================================================="
+        echo "⏰ Timestamp: $(date)"
+        echo "🔧 Workflow: setup-real-estate.yml"
+        echo "📂 Working Directory: $(pwd)"
+        echo "👤 Actor: ${{ github.actor }}"
+        echo "📦 Repository: ${{ github.repository }}"
+        echo "🌿 Ref: ${{ github.ref }}"
+        echo "💻 Runner OS: ${{ runner.os }}"
+        echo "=========================================================="
+        
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        pip install requests pandas openpyxl
+        
+    - name: 🔍 Pre-Setup Verification
+      env:
+        TEAM_SETUP_TOKEN: ${{ secrets.TEAM_SETUP_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        PROJECT_TYPE: real_estate
+      run: |
+        echo "🔍 Running environment verification..."
+        python scripts/maintenance/verify_environment.py
+        
+    # ===============================
+    # Step 1: Create GitHub Projects
+    # ===============================
+    - name: 📊 Create GitHub Projects
+      env:
+        TEAM_SETUP_TOKEN: ${{ secrets.TEAM_SETUP_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        PROJECT_TYPE: real_estate
+      run: |
+        echo "📊 Step 1: Creating 2 GitHub Projects for 不動産検索サイト..."
+        python scripts/setup/create_projects.py
+        echo "✅ Projects created successfully"
+        echo "📝 Checking project_ids.txt..."
+        if [ -f "project_ids.txt" ]; then
+          echo "Found project IDs:"
+          cat project_ids.txt
+        else
+          echo "⚠️ project_ids.txt not found"
+        fi
+        
+    # ===============================
+    # Step 2: Create All Issues
+    # ===============================
+    - name: 📋 Create All Issues & Link to Projects
+      env:
+        TEAM_SETUP_TOKEN: ${{ secrets.TEAM_SETUP_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        PROJECT_TYPE: real_estate
+      run: |
+        echo "📋 Creating All Issues and Linking to Projects..."
+        echo "🎯 Processing Task issues for 不動産検索サイト..."
+        python scripts/create_all_issues_smart.py
+        echo "✅ All issues created and linked successfully!"
+        
+    # ===============================
+    # Step 3: Update README Links
+    # ===============================
+    - name: 📝 Update README Links
+      env:
+        TEAM_SETUP_TOKEN: ${{ secrets.TEAM_SETUP_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        PROJECT_TYPE: real_estate
+      run: |
+        echo "📝 Updating README with dynamic links..."
+        python scripts/utils/update_readme_links.py
+        echo "✅ README links updated!"
+        
+    - name: Commit README updates
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add README.md || echo "No README changes to add"
+        git diff --cached --quiet || git commit -m "📝 Update README with dynamic links (不動産検索サイト)" || echo "No changes to commit"
+        git push || echo "No changes to push"
+        
+    # ===============================
+    # Final Summary
+    # ===============================
+    - name: 🎉 Display Final Summary
+      run: |
+        echo ""
+        echo "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉"
+        echo "🎉                                        🎉"
+        echo "🎉    不動産検索サイトセットアップ完了！  🎉"
+        echo "🎉    Real Estate Site Setup Complete!   🎉"
+        echo "🎉                                        🎉"
+        echo "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉"
+        echo ""
+        echo "🆕 SETUP COMPLETE"
+        echo "✅ Successfully Created:"
+        echo "• 📊 2 GitHub Projects (with custom fields)"
+        echo "• 📋 Task Issues (不動産検索サイト specific)"
+        echo "• 🔗 All issues automatically linked to projects"
+        echo "• 📝 Dynamic README links"
+        echo ""
+        echo "🔗 Access your resources:"
+        echo "• Projects: https://github.com/${{ github.repository }}/projects"
+        echo "• Issues: https://github.com/${{ github.repository }}/issues"

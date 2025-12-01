@@ -6,6 +6,7 @@ GitHub Projects作成スクリプト
 """
 
 import sys
+import os
 import time
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
@@ -222,11 +223,21 @@ def main():
         for project in existing_projects:
             print(f"  • {project['title']} (#{project['number']})")
         
-        # 3つのプロジェクトを作成
-        projects = [
-            "イマココSNS（タスク）",
-            "イマココSNS（KPT）"
-        ]
+        # プロジェクトタイプを環境変数から取得
+        project_type = os.environ.get('PROJECT_TYPE', 'imakoko')
+        print(f"\n📦 Project Type: {project_type}")
+        
+        # プロジェクトタイプに応じてプロジェクト名を設定
+        if project_type == 'real_estate':
+            projects = [
+                "不動産検索サイト（タスク）",
+                "不動産検索サイト（KPT）"
+            ]
+        else:  # imakoko or default
+            projects = [
+                "イマココSNS（タスク）",
+                "イマココSNS（KPT）"
+            ]
         
         created_projects = {}
         skipped_projects = {}

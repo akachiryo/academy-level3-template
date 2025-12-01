@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Force Cleanup and Refresh Script v3.0
+Force Cleanup and Refresh Script
 Cleans up any cached or temporary files and prepares for fresh execution
 """
 
@@ -99,11 +99,9 @@ def verify_essential_files():
     essential_files = {
         ".github/workflows/team-setup.yml": "Main workflow file",
         "scripts/setup/create_projects.py": "Projects creation script",
-        "scripts/setup/setup_discussions.py": "Discussions setup script", 
-        "scripts/setup/create_wiki_discussions.py": "Wiki discussions creation script",
         "scripts/create_all_issues_smart.py": "Issues batch creation script",
         "scripts/maintenance/verify_environment.py": "Environment verification script",
-        "data/imakoko_sns_tables.xlsx": "Database tables Excel",
+        "data/imakoko_sns_tables.csv": "Database tables CSV",
         "scripts/common/github_api.py": "Common GitHub API library",
         "scripts/config/issue_types.json": "Issue types configuration"
     }
@@ -130,13 +128,12 @@ def create_fresh_start_marker():
     """新しい実行のマーカーファイルを作成"""
     print("🆕 Creating fresh start marker...")
     
-    marker_content = f"""# Fresh Start Marker v3.0
+    marker_content = f"""# Fresh Start Marker
 Generated: {time.strftime('%Y-%m-%d %H:%M:%S')}
-Version: v3.0 (CONSOLIDATED)
 Action: Force cleanup completed
 
 This marker indicates that force cleanup was run and the environment
-is ready for fresh execution of team-setup.yml v3.0.
+is ready for fresh execution of team-setup.yml.
 
 All temporary files, caches, and generated content have been removed.
 """
@@ -162,22 +159,21 @@ def display_cleanup_summary():
     
     print("\n🎯 Next steps:")
     print("  1. Run the team-setup.yml workflow manually")
-    print("  2. Monitor the logs for v3.0 version confirmation")
+    print("  2. Monitor the logs for confirmation")
     print("  3. Verify all issues are created without limits")
     
     print("\n💡 If you still see old error messages:")
     print("  • Check that you're running from the correct branch")
     print("  • Verify the workflow file is team-setup.yml (not old ones)")
-    print("  • Look for 'v3.0 (CONSOLIDATED)' in the workflow logs")
 
 def main():
     """メイン処理"""
     print("=" * 60)
-    print("🧹 FORCE CLEANUP & REFRESH v3.0")
+    print("🧹 FORCE CLEANUP & REFRESH")
     print("=" * 60)
     print(f"⏰ Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"📂 Working directory: {os.getcwd()}")
-    print(f"🔧 Script: cleanup_force_refresh.py v3.0")
+    print(f"🔧 Script: cleanup_force_refresh.py")
     print("=" * 60)
     print("\n🎯 This script will:")
     print("  • Remove all temporary and cache files")

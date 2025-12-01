@@ -1,0 +1,35 @@
+title,body,labels,assignee,milestone,priority
+タスク1: 環境構築,"# 概要
+* メンバー内の誰かの個人のリポジトリにプロジェクトを作成する（private）
+* メンバー全員、担当メンターを招待する
+* それぞれ環境構築を実施する
+* ローカルでRailsの画面が表示されたらOK
+
+# 完了条件
+* [ ] メンバー全員が上記の環境構築を完了する","task,Required",,,medium
+タスク2: ルーティング定義,"# 概要
+* 各チームのGoogleドライブにある「ルーティング定義書」にルーティングを定義する
+
+# 完了条件
+* [ ] チーム内レビュー完了","task,Required",,,medium
+タスク3: Agent_ヘッダー,"# 要件
+[Figma未ログイン](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88-(%E3%82%B3%E3%83%94%E3%83%BC)?type=design&node-id=142-11596&mode=design&t=1yVj1jf1KaeGVoYl-0)
+[Figmaログイン済](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88-(%E3%82%B3%E3%83%94%E3%83%BC)?type=design&node-id=149-13053&mode=design&t=1yVj1jf1KaeGVoYl-0)
+
+* Agentページ用のヘッダー
+* ログインするとユーザー名が表示される
+* ユーザー名をクリックするとトグルメニューが表示される（※表示されるところまでの実装でOKです）
+* 左上のアイコンをクリックするとTOPに遷移する
+
+# 完了条件
+* [ ] 要件を満たして実装完了
+* [ ] チーム内レビュー完了
+* [ ] developブランチにマージ","task,Required",,,medium
+タスク4: Agent_フッター,"# 要件
+[Figma](https://www.figma.com/file/ViB4zNl1vE0aPAWFX1u3yn/%E4%B8%8D%E5%8B%95%E7%94%A3%E6%A4%9C%E7%B4%A2%E3%82%B5%E3%82%A4%E3%83%88-(%E3%82%B3%E3%83%94%E3%83%BC)?type=design&node-id=142-11616&mode=design&t=1yVj1jf1KaeGVoYl-0)
+* 状況によっての変化はなし
+
+# 完了条件
+* [ ] 要件を満たして実装完了
+* [ ] チーム内レビュー完了
+* [ ] developブランチにマージ","task,Required",,,medium

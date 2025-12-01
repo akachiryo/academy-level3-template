@@ -115,12 +115,6 @@ class IssueTypeConfig:
                 'labels': ['task'],
                 'project_name': 'イマココSNS（タスク）'
             },
-            'test': {
-                'csv_file': 'data/tests_for_issues.csv',
-                'title_prefix': 'テスト',
-                'labels': ['test'],
-                'project_name': 'イマココSNS（テスト）'
-            },
             'kpt': {
                 'csv_file': 'data/kpt_for_issues.csv',
                 'title_prefix': '',  # KPTは番号付けしない
